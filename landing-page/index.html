@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Ultimate Pianist — VIP Waitlist</title>
+  <meta name="description" content="Finally learn the pieces you bought but never played. Join the VIP waitlist for The Ultimate Pianist Masterclass and lock in your spot for just $1." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --gold: #c9a84c;
+      --gold-light: #e8c97a;
+      --gold-glow: rgba(201, 168, 76, 0.25);
+      --dark: #0a0a0f;
+      --dark-2: #111118;
+      --dark-3: #1a1a24;
+      --dark-card: rgba(255,255,255,0.04);
+      --text: #f0ede8;
+      --text-muted: rgba(240, 237, 232, 0.55);
+      --border: rgba(201, 168, 76, 0.2);
+      --radius: 16px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--dark);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px 24px 80px;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background: url('piano_hero_bg.png') center center / cover no-repeat;
+      filter: brightness(0.25) saturate(0.8);
+      transform: scale(1.05);
+      animation: slowZoom 20s ease-in-out infinite alternate;
+    }
+
+    @keyframes slowZoom {
+      from { transform: scale(1.05); }
+      to   { transform: scale(1.12); }
+    }
+
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom,
+        rgba(10,10,15,0.3) 0%,
+        rgba(10,10,15,0.0) 40%,
+        rgba(10,10,15,0.85) 100%);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 760px;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold);
+      border: 1px solid var(--border);
+      padding: 6px 18px;
+      border-radius: 100px;
+      margin-bottom: 28px;
+      background: rgba(201,168,76,0.06);
+      animation: fadeUp 0.8s ease both;
+    }
+
+    .hero h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3rem, 9vw, 6.5rem);
+      font-weight: 300;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      margin-bottom: 10px;
+      animation: fadeUp 0.9s 0.1s ease both;
+    }
+
+    .hero h1 em {
+      font-style: italic;
+      color: var(--gold-light);
+    }
+
+    .hero-sub {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.1rem, 3vw, 1.6rem);
+      font-weight: 300;
+      font-style: italic;
+      color: var(--text-muted);
+      margin-bottom: 48px;
+      line-height: 1.5;
+      animation: fadeUp 1s 0.2s ease both;
+    }
+
+    .hero-ctas {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      animation: fadeUp 1s 0.35s ease both;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: linear-gradient(135deg, var(--gold), #a87c2a);
+      color: #0a0a0f;
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 0.95rem;
+      letter-spacing: 0.04em;
+      padding: 18px 40px;
+      border-radius: 100px;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s, filter 0.2s;
+      box-shadow: 0 0 40px var(--gold-glow), 0 4px 20px rgba(0,0,0,0.5);
+      cursor: pointer;
+      border: none;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 0 60px rgba(201,168,76,0.4), 0 8px 30px rgba(0,0,0,0.6);
+      filter: brightness(1.08);
+    }
+    .btn-primary:active { transform: translateY(0) scale(0.99); }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      font-weight: 400;
+      letter-spacing: 0.02em;
+      text-decoration: none;
+      border: 1px solid rgba(255,255,255,0.12);
+      padding: 13px 28px;
+      border-radius: 100px;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+    .btn-secondary:hover {
+      color: var(--text);
+      border-color: rgba(255,255,255,0.25);
+      background: rgba(255,255,255,0.04);
+    }
+
+    .hero-note {
+      margin-top: 20px;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      letter-spacing: 0.02em;
+      animation: fadeUp 1s 0.45s ease both;
+    }
+
+    /* ── SECTION SHARED ── */
+    section {
+      padding: 100px 24px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 5vw, 3.4rem);
+      font-weight: 300;
+      line-height: 1.15;
+      margin-bottom: 20px;
+    }
+
+    .section-body {
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      line-height: 1.8;
+      max-width: 620px;
+    }
+
+    /* ── DIVIDER ── */
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--border), transparent);
+      margin: 0 auto;
+    }
+
+    /* ── PROBLEM SECTION ── */
+    .problem-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+
+    @media (max-width: 768px) {
+      .problem-section { grid-template-columns: 1fr; gap: 40px; }
+    }
+
+    .quote-block {
+      position: relative;
+      padding: 40px;
+      background: var(--dark-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      backdrop-filter: blur(20px);
+    }
+
+    .quote-block::before {
+      content: '"';
+      position: absolute;
+      top: -20px;
+      left: 32px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 8rem;
+      color: var(--gold);
+      line-height: 1;
+      opacity: 0.3;
+    }
+
+    .quote-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem;
+      font-style: italic;
+      font-weight: 300;
+      line-height: 1.6;
+      color: var(--text);
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── WHAT'S INSIDE ── */
+    .inside-section { text-align: center; }
+    .inside-section .section-body { margin: 0 auto 60px; }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 24px;
+      text-align: left;
+    }
+
+    .card {
+      background: var(--dark-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 36px 32px;
+      transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(to right, transparent, var(--gold), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: var(--gold);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 30px var(--gold-glow);
+    }
+    .card:hover::before { opacity: 1; }
+
+    .card-icon {
+      font-size: 2rem;
+      margin-bottom: 18px;
+      display: block;
+    }
+
+    .card-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.35rem;
+      font-weight: 400;
+      margin-bottom: 10px;
+    }
+
+    .card-desc {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
+
+    /* ── PIECES Section ── */
+    .pieces-list {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      margin-top: 48px;
+    }
+
+    .piece-row {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 22px 28px;
+      background: var(--dark-card);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 10px;
+      transition: all 0.2s;
+      cursor: default;
+    }
+    .piece-row:hover {
+      border-color: var(--border);
+      background: rgba(255,255,255,0.06);
+    }
+
+    .piece-emoji { font-size: 1.4rem; flex-shrink: 0; }
+
+    .piece-info { flex: 1; }
+    .piece-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.15rem;
+      font-weight: 400;
+    }
+    .piece-levels {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 3px;
+    }
+
+    .piece-badge {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 100px;
+      background: rgba(201,168,76,0.12);
+      color: var(--gold);
+      border: 1px solid var(--border);
+    }
+
+    /* ── VIP OFFER ── */
+    .offer-section {
+      max-width: 800px;
+    }
+
+    .offer-card {
+      background: linear-gradient(135deg, rgba(201,168,76,0.08), rgba(201,168,76,0.03));
+      border: 1px solid var(--gold);
+      border-radius: 24px;
+      padding: 60px;
+      position: relative;
+      overflow: hidden;
+      margin-top: 48px;
+    }
+    .offer-card::after {
+      content: '';
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 250px; height: 250px;
+      background: radial-gradient(circle, rgba(201,168,76,0.15), transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    @media (max-width: 600px) {
+      .offer-card { padding: 36px 28px; }
+    }
+
+    .offer-price {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3.5rem, 10vw, 6rem);
+      font-weight: 300;
+      color: var(--gold-light);
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .offer-sub {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 32px;
+      letter-spacing: 0.05em;
+    }
+
+    .offer-perks {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 40px;
+    }
+
+    .offer-perk {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .perk-check {
+      width: 22px; height: 22px;
+      background: linear-gradient(135deg, var(--gold), #a87c2a);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.65rem;
+      color: #0a0a0f;
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* ── EMAIL FORM ── */
+    .email-section {
+      max-width: 600px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .form-group {
+      display: flex;
+      gap: 12px;
+      margin-top: 40px;
+      flex-wrap: wrap;
+    }
+
+    .form-input {
+      flex: 1;
+      min-width: 220px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      padding: 16px 22px;
+      border-radius: 100px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .form-input::placeholder { color: var(--text-muted); }
+    .form-input:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 20px var(--gold-glow);
+    }
+
+    .form-note {
+      margin-top: 14px;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    /* ── SUCCESS STATE ── */
+    .success-message {
+      display: none;
+      padding: 24px;
+      border: 1px solid var(--gold);
+      border-radius: var(--radius);
+      background: rgba(201,168,76,0.08);
+      text-align: center;
+      margin-top: 40px;
+    }
+    .success-message.visible { display: block; }
+    .success-icon { font-size: 2.5rem; margin-bottom: 12px; }
+    .success-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.6rem;
+      font-weight: 400;
+      margin-bottom: 8px;
+    }
+    .success-body { font-size: 0.9rem; color: var(--text-muted); }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid rgba(255,255,255,0.06);
+      padding: 40px 24px;
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .fade-in {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .fade-in.visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    /* ── MOBILE ── */
+    @media (max-width: 480px) {
+      .form-group { flex-direction: column; }
+      .btn-primary, .btn-secondary { width: 100%; justify-content: center; }
+    }
+
+    /* ── RESERVED OVERLAY ── */
+    .reserved-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: var(--dark);
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px 24px;
+      flex-direction: column;
+    }
+    .reserved-overlay.show { display: flex; }
+
+    .reserved-overlay::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at center, rgba(201,168,76,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .reserved-emoji {
+      font-size: 5rem;
+      margin-bottom: 24px;
+      animation: bounceIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+    }
+
+    @keyframes bounceIn {
+      from { opacity: 0; transform: scale(0.4); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+
+    .reserved-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3rem, 8vw, 5.5rem);
+      font-weight: 300;
+      line-height: 1.1;
+      margin-bottom: 16px;
+      animation: fadeUp 0.6s 0.2s ease both;
+    }
+    .reserved-title em { font-style: italic; color: var(--gold-light); }
+
+    .reserved-sub {
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      line-height: 1.8;
+      max-width: 500px;
+      margin: 0 auto 40px;
+      animation: fadeUp 0.6s 0.35s ease both;
+    }
+
+    .reserved-perks {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-width: 440px;
+      width: 100%;
+      margin: 0 auto 48px;
+      animation: fadeUp 0.6s 0.45s ease both;
+    }
+
+    .reserved-perk {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: var(--dark-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 20px;
+      font-size: 0.9rem;
+      text-align: left;
+    }
+
+    .reserved-close {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      text-decoration: underline;
+      margin-top: 20px;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      animation: fadeUp 0.6s 0.6s ease both;
+    }
+    .reserved-close:hover { color: var(--text); }
+  </style>
+</head>
+<body>
+
+  <!-- ══════════════════════════════ RESERVED OVERLAY ══════════════════════════════ -->
+  <div class="reserved-overlay" id="reserved-overlay" role="dialog" aria-modal="true">
+    <div class="reserved-emoji">🎹</div>
+    <h1 class="reserved-title">You're <em>in.</em></h1>
+    <p class="reserved-sub">
+      Your spot is locked. Check your email — the simplified Moonlight Sonata Nightmare sheet music is already on its way.
+    </p>
+    <div class="reserved-perks">
+      <div class="reserved-perk">
+        <span>✉️</span>
+        <span>Sheet music PDF sent to your email</span>
+      </div>
+      <div class="reserved-perk">
+        <span>💳</span>
+        <span>Your $1 is doubled as a DreamPlay keyboard credit</span>
+      </div>
+      <div class="reserved-perk">
+        <span>🔑</span>
+        <span>First access when the masterclass opens</span>
+      </div>
+    </div>
+    <p style="font-size: 0.9rem; color: var(--text-muted); max-width: 400px;">I'll be in touch soon. In the meantime — go sit at your piano. 🎵</p>
+    <button class="reserved-close" id="reserved-close-btn" onclick="document.getElementById('reserved-overlay').classList.remove('show')">
+      Continue to site →
+    </button>
+  </div>
+
+  <!-- ══════════════════════════════ HERO ══════════════════════════════ -->
+  <section class="hero" id="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <span class="eyebrow">Opening Soon</span>
+      <h1>The <em>Ultimate</em><br>Pianist</h1>
+      <p class="hero-sub">A masterclass built around the pieces<br>you've always wanted to play.</p>
+      <div class="hero-ctas">
+        <a href="#vip" class="btn-primary" id="hero-vip-btn">
+          🎹 Reserve My Spot for $1
+        </a>
+        <a href="#waitlist" class="btn-secondary" id="hero-waitlist-btn">
+          Or join the free waitlist
+        </a>
+      </div>
+      <p class="hero-note">Your $1 doubles as a credit toward the DreamPlay keyboard · No spam, ever</p>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ══════════════════════════════ PROBLEM ══════════════════════════════ -->
+  <section id="problem">
+    <div class="problem-section fade-in">
+      <div>
+        <p class="section-label">The Honest Truth</p>
+        <h2 class="section-title">You bought the sheet music. You never learned it.</h2>
+        <p class="section-body">
+          That's not your fault. The arrangements are hard — genuinely hard — and sheet music alone doesn't teach you how to actually play something. No context. No technique. No one to tell you where to focus first.<br><br>
+          That changes now.
+        </p>
+      </div>
+      <div class="quote-block">
+        <p class="quote-text">I'm going to teach you exactly how I think about these pieces — from the person who wrote them.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ══════════════════════════════ WHAT'S INSIDE ══════════════════════════════ -->
+  <section id="inside" style="padding: 100px 24px;">
+    <div style="max-width: 1100px; margin: 0 auto;">
+      <div class="inside-section fade-in">
+        <p class="section-label">What's Inside</p>
+        <h2 class="section-title">Everything you need to actually play — not just own.</h2>
+        <p class="section-body">Every piece in the masterclass is taught at multiple difficulty levels. You choose your starting point and level up at your own pace.</p>
+      </div>
+      <div class="cards-grid fade-in" style="margin-top: 60px;">
+        <div class="card">
+          <span class="card-icon">🎵</span>
+          <h3 class="card-title">Multi-Level Breakdowns</h3>
+          <p class="card-desc">Every piece taught at Easy, Medium, and Full difficulty — so you always have a playable version and a challenge to grow into.</p>
+        </div>
+        <div class="card">
+          <span class="card-icon">🎹</span>
+          <h3 class="card-title">Technique Deep Dives</h3>
+          <p class="card-desc">I show you how I think about each section — fingering, dynamics, timing, the exact things that make a piece sound right.</p>
+        </div>
+        <div class="card">
+          <span class="card-icon">📄</span>
+          <h3 class="card-title">Sheet Music Included</h3>
+          <p class="card-desc">Every level comes with its own arrangement. Download it, print it, put it on your iPad — and start with the version that fits you today.</p>
+        </div>
+        <div class="card">
+          <span class="card-icon">🏛️</span>
+          <h3 class="card-title">100+ Foundation Lessons</h3>
+          <p class="card-desc">Brand new to piano? There's a full fundamentals track inside. You're not dropped into the deep end.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ══════════════════════════════ PIECES ══════════════════════════════ -->
+  <section id="pieces">
+    <div class="fade-in">
+      <p class="section-label">First Pieces Launching</p>
+      <h2 class="section-title">Start with the pieces<br>you already love.</h2>
+      <div class="pieces-list">
+        <div class="piece-row">
+          <span class="piece-emoji">🌙</span>
+          <div class="piece-info">
+            <div class="piece-name">Moonlight Sonata Nightmare</div>
+            <div class="piece-levels">Easy · Medium · Full Arrangement</div>
+          </div>
+          <span class="piece-badge">Launching First</span>
+        </div>
+        <div class="piece-row">
+          <span class="piece-emoji">🌸</span>
+          <div class="piece-info">
+            <div class="piece-name">Für Elise Nightmare</div>
+            <div class="piece-levels">Easy · Medium · Full Arrangement</div>
+          </div>
+          <span class="piece-badge">Coming Soon</span>
+        </div>
+        <div class="piece-row">
+          <span class="piece-emoji">🎤</span>
+          <div class="piece-info">
+            <div class="piece-name">Still D.R.E.</div>
+            <div class="piece-levels">Easy · Medium · Full Arrangement</div>
+          </div>
+          <span class="piece-badge">Coming Soon</span>
+        </div>
+        <div class="piece-row">
+          <span class="piece-emoji">🎶</span>
+          <div class="piece-info">
+            <div class="piece-name">More pieces added each month</div>
+            <div class="piece-levels">VIP members vote on what gets added next</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ══════════════════════════════ VIP OFFER ══════════════════════════════ -->
+  <section id="vip">
+    <div class="offer-section fade-in">
+      <p class="section-label">VIP Waitlist</p>
+      <h2 class="section-title">Lock in your spot<br>before it opens.</h2>
+      <p class="section-body">The masterclass opens next week. VIP members get early access, a locked-in rate, and a credit-doubling bonus toward the DreamPlay keyboard.</p>
+
+      <div class="offer-card">
+        <div class="offer-price">$1</div>
+        <p class="offer-sub">One-time reservation · Fully refundable · No subscription trap</p>
+        <ul class="offer-perks">
+          <li class="offer-perk">
+            <span class="perk-check">✓</span>
+            <span>Immediate access to the Moonlight Sonata Nightmare Easy sheet music — sent the second you sign up</span>
+          </li>
+          <li class="offer-perk">
+            <span class="perk-check">✓</span>
+            <span>Your $1 doubles as a credit toward the DreamPlay keyboard — join the VIP waitlist and I'll <strong>double it</strong></span>
+          </li>
+          <li class="offer-perk">
+            <span class="perk-check">✓</span>
+            <span>First access when the masterclass opens — before the public</span>
+          </li>
+          <li class="offer-perk">
+            <span class="perk-check">✓</span>
+            <span>Vote on which pieces get added next</span>
+          </li>
+        </ul>
+
+        <a href="https://buy.stripe.com/4gM6oA9FBdAoeEu8ZVcMM03" class="btn-primary" id="vip-reserve-btn" style="font-size: 1rem; padding: 20px 48px;">
+          🎹 Reserve My Spot — $1
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ══════════════════════════════ EMAIL WAITLIST ══════════════════════════════ -->
+  <section id="waitlist" style="padding: 100px 24px 120px;">
+    <div class="email-section fade-in">
+      <p class="section-label">Free Waitlist</p>
+      <h2 class="section-title">Not ready for $1?<br>Stay in the loop.</h2>
+      <p class="section-body" style="margin: 0 auto;">I'll let you know the moment the masterclass opens. No spam — just a single email when we go live.</p>
+
+      <form class="form-group" id="waitlist-form" novalidate>
+        <input
+          type="email"
+          class="form-input"
+          id="email-input"
+          placeholder="your@email.com"
+          required
+          autocomplete="email"
+        />
+        <button type="submit" class="btn-primary" id="waitlist-submit-btn" style="white-space: nowrap;">
+          Notify Me
+        </button>
+      </form>
+      <p class="form-note">No spam. Unsubscribe anytime. I respect your inbox.</p>
+
+      <div class="success-message" id="success-msg">
+        <div class="success-icon">🎹</div>
+        <div class="success-title">You're on the list.</div>
+        <p class="success-body">I'll reach out the moment the masterclass opens. In the meantime — go find a piano.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════ FOOTER ══════════════════════════════ -->
+  <footer>
+    <p>© 2024 The Ultimate Pianist · Made with love for pianists who refuse to give up 🎹</p>
+  </footer>
+
+  <script>
+    // ── Show "You're in!" overlay if Stripe redirected here with ?reserved=true
+    if (new URLSearchParams(window.location.search).get('reserved') === 'true') {
+      document.getElementById('reserved-overlay').classList.add('show');
+      // Clean the URL without reloading
+      history.replaceState(null, '', window.location.pathname);
+    }
+
+    // ── Scroll fade-in
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+    // ── Email form
+    const form = document.getElementById('waitlist-form');
+    const successMsg = document.getElementById('success-msg');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email-input').value.trim();
+      if (!email || !email.includes('@')) return;
+
+      const btn = document.getElementById('waitlist-submit-btn');
+      btn.textContent = 'Adding you...';
+      btn.disabled = true;
+
+      // ── TODO: Replace this with your actual API call
+      // e.g. POST to your DreamPlay email API or a form service like Formspree
+      // Example:
+      // await fetch('https://your-site.com/api/waitlist', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify({ email })
+      // });
+
+      // Simulated delay for now
+      await new Promise(r => setTimeout(r, 1000));
+
+      form.style.display = 'none';
+      document.querySelector('.form-note').style.display = 'none';
+      successMsg.classList.add('visible');
+    });
+  </script>
+</body>
+</html>

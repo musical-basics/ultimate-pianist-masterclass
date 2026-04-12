@@ -1,0 +1,30 @@
+:root {
+  --gold: #c9a84c;
+  --gold-light: #e8c97a;
+  --gold-glow: rgba(201, 168, 76, 0.25);
+  --dark: #0a0a0f;
+  --dark-card: rgba(255, 255, 255, 0.04);
+  --text: #f0ede8;
+  --text-muted: rgba(240, 237, 232, 0.55);
+  --border: rgba(201, 168, 76, 0.2);
+  --radius: 16px;
+  --font-inter: "Inter", sans-serif;
+  --font-cormorant: "Cormorant Garamond", serif;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-inter), sans-serif;
+  background: var(--dark);
+  color: var(--text);
+  overflow-x: hidden;
+}
