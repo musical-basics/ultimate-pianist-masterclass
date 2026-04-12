@@ -183,7 +183,18 @@ export default function Home() {
 
       <div className={styles.divider} />
 
+      {/* ── MANIFESTO ── */}
+      <section id="manifesto" className={styles.manifestoSection}>
+        <p className={`${styles.manifestoText} ${styles.fadeIn}`}>
+          Learn to play piano. Become a great pianist.<br />
+          <em>By playing the pieces you love.</em>
+        </p>
+      </section>
+
+      <div className={styles.divider} />
+
       {/* ── ZERO TO EXPERT ── */}
+
       <section id="journey" className={styles.section}>
         <div className={styles.fadeIn}>
           <p className={styles.sectionLabel}>The Journey</p>
