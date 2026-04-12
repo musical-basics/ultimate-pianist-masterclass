@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import styles from "./page.module.css";
 
 const STRIPE_LINK = "https://buy.stripe.com/4gM6oA9FBdAoeEu8ZVcMM03";
+const PDF_DOWNLOAD = "/moonlight-sonata-nightmare-easy.pdf";
 
 export default function Home() {
   const overlayRef = useRef<HTMLDivElement>(null);
@@ -88,6 +89,15 @@ export default function Home() {
             <span>First access when the masterclass opens</span>
           </div>
         </div>
+        <a
+          href={PDF_DOWNLOAD}
+          download="Moonlight Sonata Nightmare Easy - Full Score.pdf"
+          className={styles.btnPrimary}
+          id="overlay-download-btn"
+          style={{ marginBottom: 24 }}
+        >
+          📄 Download Sheet Music Now
+        </a>
         <p
           style={{
             fontSize: "0.9rem",
