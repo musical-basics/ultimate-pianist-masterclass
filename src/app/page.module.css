@@ -259,7 +259,155 @@
   .statDivider { display: none; }
 }
 
+/* ── JOURNEY ── */
+.journeySteps {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  position: relative;
+}
+
+.journeySteps::before {
+  content: '';
+  position: absolute;
+  left: 28px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: linear-gradient(to bottom, var(--gold), transparent);
+}
+
+.journeyStep {
+  display: flex;
+  gap: 32px;
+  align-items: flex-start;
+  padding: 32px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  position: relative;
+}
+.journeyStep:last-child { border-bottom: none; }
+
+.stepNumber {
+  font-family: var(--font-cormorant), serif;
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  color: var(--gold);
+  background: var(--dark);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.stepContent { flex: 1; padding-top: 8px; }
+
+.stepTitle {
+  font-family: var(--font-cormorant), serif;
+  font-size: 1.4rem;
+  font-weight: 400;
+  margin-bottom: 8px;
+}
+
+.stepDesc {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  line-height: 1.75;
+}
+
+/* ── COST COMPARISON ── */
+.costSection {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .costSection { grid-template-columns: 1fr; gap: 56px; }
+}
+
+.costLeft {}
+
+.costRight {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.costCard {
+  border-radius: var(--radius);
+  padding: 36px;
+  border: 1px solid;
+}
+
+.costCardBad {
+  background: rgba(255,255,255,0.02);
+  border-color: rgba(255,255,255,0.08);
+  opacity: 0.7;
+}
+
+.costCardGood {
+  background: linear-gradient(135deg, rgba(201,168,76,0.1), rgba(201,168,76,0.04));
+  border-color: var(--gold);
+  box-shadow: 0 0 40px var(--gold-glow);
+}
+
+.costCardLabel {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+}
+
+.costCardGood .costCardLabel { color: var(--gold); }
+
+.costCardAmount {
+  font-family: var(--font-cormorant), serif;
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  font-weight: 300;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.costCardBad .costCardAmount { color: var(--text-muted); text-decoration: line-through; }
+.costCardGood .costCardAmount { color: var(--gold-light); }
+
+.costCardSub {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin-bottom: 24px;
+}
+
+.costList {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.costCardGood .costList { color: var(--text); }
+
+.costList li::before {
+  content: '· ';
+  color: var(--text-muted);
+}
+
+.costCardGood .costList li::before { content: '✓ '; color: var(--gold); }
+
 /* ── WHAT'S INSIDE ── */
+
 .insideSection { text-align: center; margin-bottom: 60px; }
 
 .cardsGrid {

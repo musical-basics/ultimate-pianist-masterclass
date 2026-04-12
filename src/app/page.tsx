@@ -183,6 +183,98 @@ export default function Home() {
 
       <div className={styles.divider} />
 
+      {/* ── ZERO TO EXPERT ── */}
+      <section id="journey" className={styles.section}>
+        <div className={styles.fadeIn}>
+          <p className={styles.sectionLabel}>The Journey</p>
+          <h2 className={styles.sectionTitle}>
+            From complete beginner<br />to confident pianist.
+          </h2>
+          <p className={styles.sectionBody} style={{ marginBottom: 56 }}>
+            Most piano teachers keep things slow on purpose. They break it into tiny pieces, charge you by the hour, and never show you the mental frameworks that actually make music click. I am going to show you everything, up front.
+          </p>
+          <div className={styles.journeySteps}>
+            {[
+              {
+                step: "01",
+                title: "Start from zero",
+                desc: "100+ foundation lessons cover everything from how to sit at the piano to reading music and basic technique. No prior experience needed.",
+              },
+              {
+                step: "02",
+                title: "Learn how music actually works",
+                desc: "I teach you chord theory, rhythm, and the way professional musicians think, not just how to copy dots on a page. You will start hearing music differently.",
+              },
+              {
+                step: "03",
+                title: "Play the pieces you love",
+                desc: "Start with the Easy version of any piece. Build muscle memory. Then graduate to Medium, then the full arrangement. Real progress, at your pace.",
+              },
+              {
+                step: "04",
+                title: "Master the Nightmare arrangements",
+                desc: "The same cinematic arrangements you have seen on YouTube, broken down bar by bar by the person who wrote them. No secrets held back.",
+              },
+            ].map((s) => (
+              <div key={s.step} className={styles.journeyStep}>
+                <div className={styles.stepNumber}>{s.step}</div>
+                <div className={styles.stepContent}>
+                  <h3 className={styles.stepTitle}>{s.title}</h3>
+                  <p className={styles.stepDesc}>{s.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <div className={styles.divider} />
+
+      {/* ── COST COMPARISON ── */}
+      <section id="value" className={styles.section}>
+        <div className={`${styles.costSection} ${styles.fadeIn}`}>
+          <div className={styles.costLeft}>
+            <p className={styles.sectionLabel}>The Real Cost of "Waiting"</p>
+            <h2 className={styles.sectionTitle}>
+              Private lessons cost $200 a month.<br />This does not.
+            </h2>
+            <p className={styles.sectionBody}>
+              The average piano student pays $150 to $200 per month for private lessons. That is $2,400 a year. Over 5 years, that is $12,000 spent on hourly sessions that may or may not get you where you want to go.<br/><br/>
+              The Ultimate Pianist is a one-time investment. You get 5 years of access, every lesson, every arrangement, every level. No recurring fees, no scheduling, no waiting for your teacher to get to the good stuff.
+            </p>
+            <a href={STRIPE_LINK} className={styles.btnPrimary} id="cost-vip-btn" style={{ marginTop: 36, display: "inline-flex" }}>
+              🎹 Join the VIP Waitlist for $1
+            </a>
+          </div>
+          <div className={styles.costRight}>
+            <div className={styles.costCard + " " + styles.costCardBad}>
+              <p className={styles.costCardLabel}>Traditional Lessons</p>
+              <p className={styles.costCardAmount}>$12,000</p>
+              <p className={styles.costCardSub}>over 5 years, at $200/month</p>
+              <ul className={styles.costList}>
+                <li>Pay per hour, forever</li>
+                <li>Progress at your teacher&apos;s pace</li>
+                <li>Miss a week, lose the momentum</li>
+                <li>Never own the material</li>
+              </ul>
+            </div>
+            <div className={styles.costCard + " " + styles.costCardGood}>
+              <p className={styles.costCardLabel}>The Ultimate Pianist</p>
+              <p className={styles.costCardAmount}>$197</p>
+              <p className={styles.costCardSub}>one time, 5 years of access</p>
+              <ul className={styles.costList}>
+                <li>Lifetime-style access, no clock running</li>
+                <li>Learn at your own pace, any time</li>
+                <li>Pick up exactly where you left off</li>
+                <li>Yours to keep</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div className={styles.divider} />
+
       {/* ── WHAT'S INSIDE ── */}
       <section id="inside" className={styles.section}>
         <div className={`${styles.insideSection} ${styles.fadeIn}`}>
