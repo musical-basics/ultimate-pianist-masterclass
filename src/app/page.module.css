@@ -66,15 +66,36 @@
   animation: fadeUp 0.8s ease both;
 }
 
+.lionelByline {
+  font-family: var(--font-cormorant), serif;
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 28px;
+  animation: fadeUp 0.7s ease both;
+}
+
 .heroSub {
   font-family: var(--font-cormorant), serif;
-  font-size: clamp(1.1rem, 3vw, 1.6rem);
+  font-size: clamp(1.1rem, 3vw, 1.55rem);
   font-weight: 300;
   font-style: italic;
   color: var(--text-muted);
-  margin-bottom: 48px;
-  line-height: 1.5;
+  margin-bottom: 20px;
+  line-height: 1.6;
   animation: fadeUp 1s 0.2s ease both;
+  max-width: 640px;
+}
+
+.heroBody {
+  font-size: clamp(0.9rem, 2vw, 1.05rem);
+  color: var(--text-muted);
+  line-height: 1.8;
+  max-width: 600px;
+  margin: 0 auto 48px;
+  animation: fadeUp 1s 0.3s ease both;
 }
 
 .heroCtas {
@@ -82,7 +103,7 @@
   flex-direction: column;
   align-items: center;
   gap: 14px;
-  animation: fadeUp 1s 0.35s ease both;
+  animation: fadeUp 1s 0.42s ease both;
 }
 
 .heroNote {
@@ -90,7 +111,22 @@
   font-size: 0.78rem;
   color: var(--text-muted);
   letter-spacing: 0.02em;
-  animation: fadeUp 1s 0.45s ease both;
+  animation: fadeUp 1s 0.52s ease both;
+}
+
+.scrollIndicator {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  color: var(--text-muted);
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(8px); }
 }
 
 /* ── BUTTONS ── */
@@ -178,48 +214,49 @@
   background: linear-gradient(to right, transparent, var(--border), transparent);
 }
 
-/* ── PROBLEM ── */
-.problemSection {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 80px;
+/* ── SOCIAL PROOF STATS ── */
+.statsSection {
+  padding: 60px 24px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.statsInner {
+  display: flex;
   align-items: center;
+  justify-content: center;
+  gap: 80px;
+  flex-wrap: wrap;
+  text-align: center;
 }
 
-@media (max-width: 768px) {
-  .problemSection { grid-template-columns: 1fr; gap: 40px; }
-}
+.statItem { display: flex; flex-direction: column; gap: 6px; }
 
-.quoteBlock {
-  position: relative;
-  padding: 40px;
-  background: var(--dark-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  backdrop-filter: blur(20px);
-}
-
-.quoteBlock::before {
-  content: '"';
-  position: absolute;
-  top: -20px;
-  left: 32px;
+.statNumber {
   font-family: var(--font-cormorant), serif;
-  font-size: 8rem;
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 300;
   color: var(--gold);
   line-height: 1;
-  opacity: 0.3;
 }
 
-.quoteText {
-  font-family: var(--font-cormorant), serif;
-  font-size: 1.5rem;
-  font-style: italic;
-  font-weight: 300;
-  line-height: 1.6;
-  color: var(--text);
-  position: relative;
-  z-index: 1;
+.statLabel {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.statDivider {
+  width: 1px;
+  height: 48px;
+  background: var(--border);
+}
+
+@media (max-width: 480px) {
+  .statsInner { gap: 32px; }
+  .statDivider { display: none; }
 }
 
 /* ── WHAT'S INSIDE ── */
@@ -396,6 +433,14 @@
   text-align: center;
   font-size: 0.8rem;
   color: var(--text-muted);
+}
+
+.footerSignoff {
+  font-family: var(--font-cormorant), serif;
+  font-size: 1.2rem;
+  font-style: italic;
+  color: var(--text-muted);
+  margin-bottom: 8px;
 }
 
 /* ── ANIMATIONS ── */
