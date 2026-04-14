@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import Image from "next/image";
 import styles from "./page.module.css";
 
 const STRIPE_LINK = "https://buy.stripe.com/4gM6oA9FBdAoeEu8ZVcMM03";
@@ -82,7 +83,7 @@ export default function Home() {
           </div>
           <div className={styles.reservedPerk}>
             <span>💳</span>
-            <span>Your $1 is doubled as a DreamPlay keyboard credit</span>
+            <span>Your $1 is now a $10 credit toward the masterclass</span>
           </div>
           <div className={styles.reservedPerk}>
             <span>🔑</span>
@@ -126,15 +127,6 @@ export default function Home() {
           <h1>
             The <em>Ultimate Pianist</em> Masterclass is coming.
           </h1>
-          <p className={styles.heroSub}>
-            Learn to play my most popular arrangements, broken down into Easy,
-            Medium, and Full versions, taught by me, the person who wrote them.
-          </p>
-          <p className={styles.heroBody}>
-            For years, thousands of you have bought my sheet music but never
-            learned it because it&apos;s too hard. I&apos;m fixing that. The
-            masterclass opens next week.
-          </p>
           <div className={styles.heroCtas}>
             <a
               href={STRIPE_LINK}
@@ -152,8 +144,7 @@ export default function Home() {
             </a>
           </div>
           <p className={styles.heroNote}>
-            Your $1 doubles as a credit toward the DreamPlay keyboard. No spam,
-            ever.
+            Your $1 becomes a $10 credit toward the masterclass. No spam, ever.
           </p>
         </div>
         <div className={styles.scrollIndicator}>
@@ -171,6 +162,40 @@ export default function Home() {
               d="M19 14l-7 7m0 0l-7-7m7 7V3"
             />
           </svg>
+        </div>
+      </section>
+
+      <div className={styles.divider} />
+
+      {/* ── YOUR TEACHER ── */}
+      <section id="about" className={styles.section}>
+        <div className={`${styles.aboutSection} ${styles.fadeIn}`}>
+          <div className={styles.aboutImage}>
+            <Image
+              src="/lionel-concert-hall.jpg"
+              alt="Lionel Yu performing at a concert hall"
+              fill
+              sizes="(max-width: 900px) 100vw, 50vw"
+              priority
+            />
+          </div>
+          <div className={styles.aboutContent}>
+            <p className={styles.sectionLabel}>Your Teacher</p>
+            <h2 className={styles.sectionTitle}>
+              Hi, I&apos;m Lionel.
+            </h2>
+            <p className={styles.sectionBody}>
+              Learn to play my most popular arrangements, broken down into
+              Easy, Medium, and Full versions, taught by me, the person who
+              wrote them.
+            </p>
+            <p className={styles.sectionBody}>
+              For years, thousands of you have bought my sheet music but never
+              learned it because it&apos;s too hard. I&apos;m fixing that. The
+              masterclass opens next week.
+            </p>
+            <p className={styles.aboutSignoff}>– Lionel Yu</p>
+          </div>
         </div>
       </section>
 
@@ -339,6 +364,20 @@ export default function Home() {
             </div>
           ))}
         </div>
+        <figure className={`${styles.sheetPreview} ${styles.fadeIn}`}>
+          <div className={styles.sheetPreviewImage}>
+            <Image
+              src="/sheet_music_example.png"
+              alt="Example of sheet music from the masterclass"
+              width={920}
+              height={510}
+              sizes="(max-width: 900px) 100vw, 900px"
+            />
+          </div>
+          <figcaption className={styles.sheetPreviewCaption}>
+            A glimpse of the sheet music you&apos;ll get inside.
+          </figcaption>
+        </figure>
       </section>
 
       <div className={styles.divider} />
@@ -417,6 +456,10 @@ export default function Home() {
             </p>
             <ul className={styles.offerPerks}>
               {[
+                {
+                  label: "10x your $1:",
+                  text: "instantly becomes a $10 credit toward the masterclass",
+                },
                 {
                   label: "DOUBLE",
                   text: "your keyboard credits: spend $197 on the masterclass, get $394 toward a DreamPlay keyboard",

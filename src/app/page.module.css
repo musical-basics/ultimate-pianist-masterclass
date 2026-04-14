@@ -214,6 +214,51 @@
   background: linear-gradient(to right, transparent, var(--border), transparent);
 }
 
+/* ── YOUR TEACHER / ABOUT ── */
+.aboutSection {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+}
+
+@media (max-width: 900px) {
+  .aboutSection { grid-template-columns: 1fr; gap: 40px; }
+}
+
+.aboutImage {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  width: 100%;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+}
+
+.aboutImage img {
+  object-fit: cover;
+}
+
+.aboutContent {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.aboutContent .sectionBody {
+  max-width: none;
+  margin: 0;
+}
+
+.aboutSignoff {
+  font-family: var(--font-cormorant), serif;
+  font-size: 1.15rem;
+  font-style: italic;
+  color: var(--gold-light);
+  margin-top: 12px;
+}
+
 /* ── SOCIAL PROOF STATS ── */
 .statsSection {
   padding: 60px 24px;
@@ -356,8 +401,6 @@
   .costSection { grid-template-columns: 1fr; gap: 56px; }
 }
 
-.costLeft {}
-
 .costRight {
   display: flex;
   flex-direction: column;
@@ -465,6 +508,37 @@
 .cardIcon { font-size: 2rem; margin-bottom: 18px; display: block; }
 .cardTitle { font-family: var(--font-cormorant), serif; font-size: 1.35rem; font-weight: 400; margin-bottom: 10px; }
 .cardDesc { font-size: 0.9rem; color: var(--text-muted); line-height: 1.7; }
+
+/* ── SHEET MUSIC PREVIEW ── */
+.sheetPreview {
+  margin: 72px auto 0;
+  max-width: 900px;
+  text-align: center;
+}
+
+.sheetPreviewImage {
+  position: relative;
+  width: 100%;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 40px var(--gold-glow);
+  background: var(--dark-card);
+}
+
+.sheetPreviewImage img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.sheetPreviewCaption {
+  margin-top: 18px;
+  font-size: 0.85rem;
+  font-style: italic;
+  color: var(--text-muted);
+  letter-spacing: 0.02em;
+}
 
 /* ── PIECES ── */
 .piecesList {
