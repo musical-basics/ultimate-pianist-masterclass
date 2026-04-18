@@ -154,28 +154,6 @@
 }
 .btnPrimary:active { transform: translateY(0) scale(0.99); }
 
-.btnSecondary {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: transparent;
-  color: var(--text-muted);
-  font-size: 0.85rem;
-  font-weight: 400;
-  letter-spacing: 0.02em;
-  text-decoration: none;
-  border: 1px solid rgba(255,255,255,0.12);
-  padding: 13px 28px;
-  border-radius: 100px;
-  transition: all 0.2s;
-  cursor: pointer;
-}
-.btnSecondary:hover {
-  color: var(--text);
-  border-color: rgba(255,255,255,0.25);
-  background: rgba(255,255,255,0.04);
-}
-
 /* ── SECTION SHARED ── */
 .section {
   padding: 100px 24px;
@@ -628,49 +606,6 @@
   margin-top: 1px;
 }
 
-/* ── EMAIL FORM ── */
-.emailSection { max-width: 600px; margin: 0 auto; text-align: center; }
-
-.formGroup {
-  display: flex;
-  gap: 12px;
-  margin-top: 40px;
-  flex-wrap: wrap;
-}
-
-.formInput {
-  flex: 1;
-  min-width: 220px;
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.15);
-  color: var(--text);
-  font-size: 0.95rem;
-  padding: 16px 22px;
-  border-radius: 100px;
-  outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
-  font-family: var(--font-inter), sans-serif;
-}
-.formInput::placeholder { color: var(--text-muted); }
-.formInput:focus { border-color: var(--gold); box-shadow: 0 0 20px var(--gold-glow); }
-
-.formNote { margin-top: 14px; font-size: 0.78rem; color: var(--text-muted); }
-
-/* ── SUCCESS ── */
-.successMessage {
-  display: none;
-  padding: 24px;
-  border: 1px solid var(--gold);
-  border-radius: var(--radius);
-  background: rgba(201,168,76,0.08);
-  text-align: center;
-  margin-top: 40px;
-}
-.successMessage.visible { display: block; }
-.successIcon { font-size: 2.5rem; margin-bottom: 12px; }
-.successTitle { font-family: var(--font-cormorant), serif; font-size: 1.6rem; font-weight: 400; margin-bottom: 8px; }
-.successBody { font-size: 0.9rem; color: var(--text-muted); }
-
 /* ── FOOTER ── */
 .footer {
   border-top: 1px solid rgba(255,255,255,0.06);
@@ -788,6 +723,5 @@
 
 /* ── MOBILE ── */
 @media (max-width: 480px) {
-  .formGroup { flex-direction: column; }
-  .btnPrimary, .btnSecondary { width: 100%; justify-content: center; }
+  .btnPrimary { width: 100%; justify-content: center; }
 }

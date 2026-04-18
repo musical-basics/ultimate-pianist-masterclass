@@ -9,8 +9,6 @@ const PDF_DOWNLOAD = "/moonlight-sonata-nightmare-easy.pdf";
 
 export default function Home() {
   const overlayRef = useRef<HTMLDivElement>(null);
-  const formRef = useRef<HTMLFormElement>(null);
-  const successRef = useRef<HTMLDivElement>(null);
 
   // Show "You're in!" overlay if Stripe redirected with ?reserved=true
   useEffect(() => {
@@ -35,28 +33,6 @@ export default function Home() {
       .forEach((el) => observer.observe(el));
     return () => observer.disconnect();
   }, []);
-
-  async function handleWaitlist(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const form = formRef.current!;
-    const email = (
-      form.querySelector("#email-input") as HTMLInputElement
-    ).value.trim();
-    if (!email || !email.includes("@")) return;
-    const btn = form.querySelector("button")!;
-    btn.textContent = "Adding you...";
-    btn.setAttribute("disabled", "true");
-
-    // TODO: wire to your DreamPlay email API
-    await new Promise((r) => setTimeout(r, 1000));
-
-    form.style.display = "none";
-    const note = document.querySelector(
-      `.${styles.formNote}`
-    ) as HTMLElement;
-    if (note) note.style.display = "none";
-    successRef.current?.classList.add(styles.visible);
-  }
 
   return (
     <>
@@ -135,16 +111,9 @@ export default function Home() {
             >
               🎹 Join the VIP Waitlist for $1
             </a>
-            <a
-              href="#waitlist"
-              className={styles.btnSecondary}
-              id="hero-waitlist-btn"
-            >
-              Or join the free waitlist
-            </a>
           </div>
           <p className={styles.heroNote}>
-            Your $1 becomes a $10 credit toward the masterclass. No spam, ever.
+            Your $1 becomes a $10 credit toward the masterclass.
           </p>
         </div>
         <div className={styles.scrollIndicator}>
@@ -493,63 +462,6 @@ export default function Home() {
             >
               🎹 Join the VIP Waitlist for $1
             </a>
-          </div>
-        </div>
-      </section>
-
-      <div className={styles.divider} />
-
-      {/* ── FREE WAITLIST ── */}
-      <section
-        id="waitlist"
-        className={styles.section}
-        style={{ paddingBottom: 120 }}
-      >
-        <div className={`${styles.emailSection} ${styles.fadeIn}`}>
-          <p className={styles.sectionLabel}>Free Waitlist</p>
-          <h2 className={styles.sectionTitle}>
-            Not ready for $1?
-            <br />
-            Stay in the loop.
-          </h2>
-          <p className={styles.sectionBody} style={{ margin: "0 auto" }}>
-            I&apos;ll let you know the moment the masterclass opens. No spam,
-            just a single email when we go live.
-          </p>
-          <form
-            className={styles.formGroup}
-            id="waitlist-form"
-            ref={formRef}
-            onSubmit={handleWaitlist}
-            noValidate
-          >
-            <input
-              type="email"
-              className={styles.formInput}
-              id="email-input"
-              placeholder="your@email.com"
-              required
-              autoComplete="email"
-            />
-            <button
-              type="submit"
-              className={styles.btnPrimary}
-              id="waitlist-submit-btn"
-              style={{ whiteSpace: "nowrap" }}
-            >
-              Notify Me
-            </button>
-          </form>
-          <p className={styles.formNote}>
-            No spam. Unsubscribe anytime. I respect your inbox.
-          </p>
-          <div className={styles.successMessage} ref={successRef}>
-            <div className={styles.successIcon}>🎹</div>
-            <div className={styles.successTitle}>You&apos;re on the list.</div>
-            <p className={styles.successBody}>
-              I&apos;ll reach out the moment the masterclass opens. In the
-              meantime, go find a piano.
-            </p>
           </div>
         </div>
       </section>
