@@ -285,7 +285,7 @@ export default function Home() {
                 <li>Lifetime-style access, no clock running</li>
                 <li>Learn at your own pace, any time</li>
                 <li>Pick up exactly where you left off</li>
-                <li>Yours to keep</li>
+                <li>Keep all downloads</li>
               </ul>
             </div>
           </div>
