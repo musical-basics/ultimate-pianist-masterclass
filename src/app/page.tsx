@@ -275,7 +275,11 @@ export default function Home() {
             </div>
             <div className={styles.costCard + " " + styles.costCardGood}>
               <p className={styles.costCardLabel}>The Ultimate Pianist</p>
-              <p className={styles.costCardAmount}>$197</p>
+              <p className={styles.introPriceLabel}>Intro Price</p>
+              <p className={styles.costCardAmount}>
+                <span className={styles.oldPrice}>$297</span>
+                $197
+              </p>
               <p className={styles.costCardSub}>one time, 5 years of access</p>
               <ul className={styles.costList}>
                 <li>Lifetime-style access, no clock running</li>
@@ -415,8 +419,16 @@ export default function Home() {
           </h2>
           <p className={styles.sectionBody}>
             The masterclass opens next week. VIP members get early access, a
-            locked-in rate, and a credit-doubling bonus toward the DreamPlay
-            keyboard.
+            locked-in rate, and a credit-doubling bonus toward the{" "}
+            <a
+              href="https://dreamplaypianos.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.inlineLink}
+            >
+              DreamPlay keyboard
+            </a>
+            .
           </p>
           <div className={styles.offerCard}>
             <div className={styles.offerPrice}>$1</div>
@@ -431,7 +443,20 @@ export default function Home() {
                 },
                 {
                   label: "DOUBLE",
-                  text: "your keyboard credits: spend $197 on the masterclass, get $394 toward a DreamPlay keyboard",
+                  text: (
+                    <>
+                      your keyboard credits: spend $197 on the masterclass,
+                      get $394 toward a{" "}
+                      <a
+                        href="https://dreamplaypianos.com"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={styles.inlineLink}
+                      >
+                        DreamPlay keyboard
+                      </a>
+                    </>
+                  ),
                 },
                 {
                   label: "24-hour early access",
