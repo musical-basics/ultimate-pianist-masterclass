@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, Inter } from "next/font/google";
+import DpAnalyticsBeacon from "@/components/dp-analytics-beacon";
 import "./globals.css";
 
 const inter = Inter({
@@ -30,6 +31,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.variable} ${cormorant.variable}`}>
         {children}
+        <DpAnalyticsBeacon />
       </body>
     </html>
   );
