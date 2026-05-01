@@ -68,7 +68,7 @@ async function fireBeacon(eventName: string, extra: Record<string, unknown> = {}
     const body = JSON.stringify(payload);
     // Prefer sendBeacon for unload-resilience on session_end
     if (
-      eventName === "session_end" &&
+      eventName === "page_leave" &&
       typeof navigator !== "undefined" &&
       typeof navigator.sendBeacon === "function"
     ) {
@@ -99,9 +99,11 @@ export default function DpAnalyticsBeacon() {
 
     // Fire pageview once per session (not per route push, since this page is
     // a single-route landing). Avoids double-firing on hot reload in dev.
+    // Event name "pageview" + "page_leave" matches the convention used by
+    // dreamplay-analytics' stats-v2 dashboard.
     const alreadyFired = window.sessionStorage.getItem(PAGEVIEW_FIRED_KEY);
     if (!alreadyFired) {
-      void fireBeacon("page_view");
+      void fireBeacon("pageview");
       try {
         window.sessionStorage.setItem(PAGEVIEW_FIRED_KEY, "1");
       } catch {
@@ -111,7 +113,8 @@ export default function DpAnalyticsBeacon() {
 
     const handleSessionEnd = () => {
       const elapsedSeconds = Math.round((Date.now() - startedAtRef.current) / 1000);
-      void fireBeacon("session_end", { duration: elapsedSeconds });
+      // dreamplay-analytics expects metadata.duration_seconds on page_leave
+      void fireBeacon("page_leave", { duration_seconds: elapsedSeconds });
     };
 
     const handleVisibilityChange = () => {
