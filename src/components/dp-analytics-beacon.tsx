@@ -44,13 +44,20 @@ function readMetadataFromUrl(): Record<string, string> {
 async function fireBeacon(eventName: string, extra: Record<string, unknown> = {}) {
   if (typeof window === "undefined") return;
   const urlMeta = readMetadataFromUrl();
+  // Prefix the path with the host so dashboards can distinguish a "/" on
+  // ultimatepianist.com from a "/" on dreamplaypianos.com or any other
+  // origin that posts to the same analytics_logs table.
+  const fullPath =
+    window.location.host + window.location.pathname + window.location.search;
+
   const payload = {
     eventName,
-    path: window.location.pathname + window.location.search,
+    path: fullPath,
     sessionId: getOrCreateSessionId(),
     metadata: {
       site: "musicalbasics",
       brand: "ultimate-pianist",
+      host: window.location.host,
       referrer: document.referrer || null,
       ...urlMeta,
       ...extra,
