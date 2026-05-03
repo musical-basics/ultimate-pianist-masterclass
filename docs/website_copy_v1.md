@@ -1,209 +1,172 @@
-# The Ultimate Pianist — Website Copy v1
-> Text-copy basis for redesign. Synthesized from `announcement_video_script_v2.md` + `landing-page/index.html`.
+# The Ultimate Pianist Website Copy v2
+> Canonical homepage copy for the free-first acquisition page.
 
 ---
 
 ## Meta / SEO
 
-- **Page Title:** The Ultimate Pianist — VIP Waitlist
-- **Meta Description:** Finally learn the pieces you bought but never played. Join the VIP waitlist for The Ultimate Pianist Masterclass and lock in your spot for just $1.
+- **Page Title:** The Ultimate Pianist | Start Free
+- **Meta Description:** Start The Ultimate Pianist free with the first 10 levels and 50 foundation lessons from Lionel Yu.
 
 ---
 
-## Hero Section
+## Hero
 
-**Eyebrow Tag:** Opening Soon
+**Brand line:** The Ultimate Pianist
 
 **H1:**
-> The *Ultimate* Pianist
+> The first *50 lessons* are on me.
 
-**Subheadline:**
-> A masterclass built around the pieces you've always wanted to play.
+**Subhead:**
+> Start becoming an ultimate pianist with ten levels of real foundation work, taught by Lionel Yu.
 
-**Primary CTA:** 🎹 Reserve My Spot for $1
+**Primary CTA:** Get free access
 
-**Secondary CTA:** Or join the free waitlist
+**Form:** Single email field only
 
-**Trust Note:**
-> Your $1 doubles as a credit toward the DreamPlay keyboard · No spam, ever
-
----
-
-## Section 1 — The Problem ("The Honest Truth")
-
-**Label:** The Honest Truth
-
-**H2:**
-> You bought the sheet music. You never learned it.
-
-**Body:**
-> That's not your fault. For years, you've been buying my sheet music — Moonlight Sonata Nightmare, Für Elise Nightmare, Still Dre — and I'm so happy about that. But I also know that most of you who bought it never ended up learning it. Because honestly, it's really hard.
->
-> And it's not your fault. Sheet music alone doesn't teach you how to actually play something. It doesn't give you the technique, the practice strategy, or the context you need to get there.
->
-> That changes now.
-
-**Pull Quote (Card):**
-> "I'm going to teach you exactly how I think about these pieces — from the person who wrote them."
-
----
-
-## Section 2 — The Solution ("The Reveal")
-
-**Label:** What This Is
-
-**H2:**
-> A step-by-step course designed to make you a better pianist — in a way that's actually fun.
-
-**Body:**
-> Here's the problem with traditional piano education: they make you play boring pieces. Clementi Sonatinas. Simplified Für Elise that sounds nothing like the real thing. You lose motivation before you ever build real skill.
->
-> I took a completely different approach. Every single piece in this course is an arrangement that I personally wrote — the pieces you've heard on my channel. But broken down into Easy, Medium, and Full versions so you can actually learn them.
->
-> They're 10 times more fun to play than anything in a traditional curriculum, and they still teach you real technique, real music theory, and real practice habits — because I designed them to. By the time you can play the full version, you haven't just learned a song. You've become a fundamentally stronger pianist.
-
-**Social Proof Bar (optional callouts):**
-- Carnegie Hall & Kennedy Center performer
-- 1M+ YouTube subscribers
-- 30M+ combined views on Moonlight Sonata Nightmare
-
----
-
-## Section 3 — What's Inside
-
-**Label:** What's Inside
-
-**H2:**
-> Everything you need to actually play — not just own.
-
-**Intro Body:**
-> Every piece in the masterclass is taught at multiple difficulty levels. You choose your starting point and level up at your own pace.
-
-**Feature Cards:**
-
-1. **🎵 Multi-Level Breakdowns**
-   Every piece taught at Easy, Medium, and Full difficulty — so you always have a playable version and a challenge to grow into.
-
-2. **🎹 Technique Deep Dives**
-   I show you how I think about each section — fingering, dynamics, timing, the exact things that make a piece sound right.
-
-3. **📄 Sheet Music Included**
-   Every level comes with its own arrangement. Download it, print it, put it on your iPad — and start with the version that fits you today.
-
-4. **🏛️ 100+ Foundation Lessons**
-   Brand new to piano? There's a full fundamentals track inside — from Twinkle Twinkle Little Star all the way up to Beethoven's Fifth. You're not dropped into the deep end.
-
----
-
-## Section 4 — The Pieces
-
-**Label:** First Pieces Launching
-
-**H2:**
-> Start with the pieces you already love.
-
-**Piece List:**
-
-| Piece | Levels | Status |
-|---|---|---|
-| 🌙 Moonlight Sonata Nightmare | Easy · Medium · Full | Launching First |
-| 🌸 Für Elise Nightmare | Easy · Medium · Full | Coming Soon |
-| 🎤 Still D.R.E. | Easy · Medium · Full | Coming Soon |
-| 🎶 More pieces added each month | VIP members vote on what gets added next | — |
-
----
-
-## Section 5 — The Keyboard Cross-Sell
-
-**Label:** One More Thing
-
-**H2:**
-> Built for the 87% of players whose hands don't fit a standard keyboard.
-
-**Body:**
-> If you've ever felt like your hands are too small for the piano, I've been building something called the **DreamPlay keyboard** — a keyboard with narrower keys designed to fit the 87% of women and 24% of men whose hands don't fit a standard keyboard.
->
-> If you join the masterclass, whatever you spend gets matched dollar-for-dollar as a credit toward the keyboard. And if you join the VIP waitlist right now for just $1, I'll double that. Spend $197 on the masterclass, get almost $400 off the keyboard.
-
----
-
-## Section 6 — VIP Offer
-
-**Label:** VIP Waitlist
-
-**H2:**
-> Lock in your spot before it opens.
-
-**Body:**
-> The masterclass opens next week. VIP members get early access, a locked-in rate, and a credit-doubling bonus toward the DreamPlay keyboard.
-
-**Price Display:** $1
-
-**Price Sub-copy:**
-> One-time reservation · Fully refundable · No subscription trap
-
-**VIP Perks (Checklist):**
-- ✓ Immediate access to the Moonlight Sonata Nightmare Easy sheet music — sent the second you sign up
-- ✓ Your $1 doubles as a credit toward the DreamPlay keyboard — join VIP and I'll **double it**
-- ✓ First access when the masterclass opens — before the public
-- ✓ Vote on which pieces get added next
-
-**Primary CTA:** 🎹 Reserve My Spot — $1
-
----
-
-## Section 7 — Free Waitlist (Email Capture)
-
-**Label:** Free Waitlist
-
-**H2:**
-> Not ready for $1? Stay in the loop.
-
-**Body:**
-> I'll let you know the moment the masterclass opens. No spam — just a single email when we go live.
-
-**Form Placeholder:** your@email.com
-
-**Submit Button:** Notify Me
-
-**Form Note:**
+**No-spam note:**
 > No spam. Unsubscribe anytime. I respect your inbox.
 
-**Success State (post-submit):**
-> 🎹 You're on the list.
-> I'll reach out the moment the masterclass opens. In the meantime — go find a piano.
+---
+
+## What You Get Free
+
+**Label:** What You Get Free
+
+**H2:**
+> The first 10 levels of the curriculum.
+
+**Body:**
+> This is not a teaser. It is the full foundation tier of The Ultimate Pianist, built to take you from the beginning to a point where harder music finally has somewhere to land.
+
+### Level Breakdown
+
+1. **Level 1: Sit, listen, and find the keys**  
+   Start from zero with posture, hand shape, keyboard geography, and the first patterns that make the piano feel less mysterious.
+
+2. **Level 2: Rhythm you can actually feel**  
+   Learn pulse, counting, simple note values, and how to stay steady without turning practice into math homework.
+
+3. **Level 3: Read your first real music**  
+   Build the treble and bass clef foundation so notes on the page start connecting to sounds under your hands.
+
+4. **Level 4: Use both hands together**  
+   Coordinate left and right hand parts with simple exercises that develop control instead of tension.
+
+5. **Level 5: Chords and harmony**  
+   Understand major, minor, and basic chord shapes so you can hear what is happening instead of just copying notes.
+
+6. **Level 6: Scales without boredom**  
+   Use scales as a way to train fingering, movement, and sound, not as a punishment before the music starts.
+
+7. **Level 7: Phrasing and musical shape**  
+   Learn how to make a melody breathe with dynamics, touch, and timing so even simple music sounds alive.
+
+8. **Level 8: Practice that sticks**  
+   Break hard passages into small wins, fix mistakes cleanly, and build a repeatable practice system.
+
+9. **Level 9: Your first performance pieces**  
+   Put the foundations together in short pieces that teach reading, rhythm, coordination, and expression at once.
+
+10. **Level 10: Ready for the next tier**  
+    Finish with the skills you need to step into harder repertoire, including Lionel's cinematic Nightmare arrangements later on.
 
 ---
 
-## Post-Purchase / Confirmation Overlay
+## Sample Lesson
 
-**H1:** You're *in.*
+**Label:** Sample Lesson
+
+**H2:**
+> See the teaching style before you sign up.
 
 **Body:**
-> Your spot is locked. Check your email — the simplified Moonlight Sonata Nightmare sheet music is already on its way.
+> The best way to know if a course will work for you is to watch a lesson. Drop the intro or first free lesson here as soon as the video is ready.
 
-**Confirmation Perks:**
-- ✉️ Sheet music PDF sent to your email
-- 💳 Your $1 is doubled as a DreamPlay keyboard credit
-- 🔑 First access when the masterclass opens
+**Placeholder:**
+> Sample lesson video placeholder. Embed the intro lesson here when it is ready.
 
-**Closing Line:**
-> I'll be in touch soon. In the meantime — go sit at your piano. 🎵
+---
 
-**Dismiss Link:** Continue to site →
+## Why This Exists
+
+**Label:** Why This Exists
+
+**H2:**
+> A real piano course, not bait.
+
+**Body:**
+> I am giving away the foundation because that is where most people get stuck. If you have ever bought sheet music and then felt lost at the piano, this is the missing layer.
+>
+> The pieces are the vehicle. The destination is becoming a stronger pianist. The advanced masterclass keeps going from here, but the first 50 lessons stand on their own.
+
+**Signoff:** Lionel Yu
+
+---
+
+## Social Proof
+
+- 10,000+ sheet music sold
+- 1M+ YouTube subscribers
+- 50 free foundation lessons
+
+---
+
+## Testimonials Placeholder
+
+**Label:** Student Notes
+
+**H2:**
+> Add student proof here when it is ready.
+
+**Body:**
+> This space is reserved for a few short student quotes, screenshots, or YouTube comments once the free tier has its first real feedback.
+
+---
+
+## What Comes After
+
+**Label:** What Comes After
+
+**H2:**
+> After the foundation, the path keeps going.
+
+**Body:**
+> When you finish the free 50 lessons, the advanced masterclass is where the bigger repertoire lives: the Nightmare arrangements, deeper technique, and the pieces that made MusicalBasics feel different in the first place.
+>
+> No pricing here. No countdown. First, build the foundation. If you want to go deeper after that, you will know exactly why.
+
+---
+
+## Confirmation Page
+
+**Page Title:** Check Your Email | The Ultimate Pianist
+
+**H1:**
+> Check your email for your access link.
+
+**Body:**
+> I just sent the next step to your inbox. While you wait, watch the intro video here so the first lesson already has a little context.
+
+**Video Placeholder:**
+> Intro video placeholder. Embed the welcome or first lesson video here when it is ready.
 
 ---
 
 ## Footer
 
-> © 2025 The Ultimate Pianist · Made with love for pianists who refuse to give up 🎹
+- The Ultimate Pianist
+- YouTube
+- Email Lionel
+- We also make pianos
+- Copyright line
 
 ---
 
-## Copy Notes & Tone of Voice
+## Copy Rules
 
-- **Voice:** Direct, personal, conversational. Lionel speaking as himself — not a brand.
-- **Remove:** All em dashes replaced with alternatives (hyphens or rewording).
-- **CTA Consistency:** All primary CTAs read "Reserve My Spot for $1" or "Reserve My Spot — $1". Secondary: "Join the free waitlist" / "Notify Me".
-- **No spam signals:** Every form touchpoint includes an explicit no-spam reassurance.
-- **Key reframe to preserve:** The pieces are the *vehicle*, not the destination. The destination is becoming a stronger pianist overall.
+- Lionel speaks as himself.
+- No em dashes in prose.
+- Single CTA: Get free access.
+- No pricing, Stripe checkout, VIP waitlist, DreamPlay multiplier, urgency, countdown, or limited-spots framing.
+- DreamPlay appears only as a footer link labeled "We also make pianos."

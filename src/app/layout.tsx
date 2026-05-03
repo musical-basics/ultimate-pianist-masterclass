@@ -17,9 +17,9 @@ const cormorant = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  title: "The Ultimate Pianist — VIP Waitlist",
+  title: "The Ultimate Pianist | Start Free",
   description:
-    "Finally learn the pieces you bought but never played. Join the VIP waitlist for The Ultimate Pianist Masterclass and lock in your spot for just $1.",
+    "Start The Ultimate Pianist free with the first 10 levels and 50 foundation lessons from Lionel Yu.",
 };
 
 export default function RootLayout({

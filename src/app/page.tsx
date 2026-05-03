@@ -1,504 +1,358 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import type { FormEvent } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import styles from "./page.module.css";
 
-const STRIPE_LINK = "https://buy.stripe.com/4gM6oA9FBdAoeEu8ZVcMM03";
-const PDF_DOWNLOAD = "/moonlight-sonata-nightmare-easy.pdf";
+const freeLevels = [
+  {
+    level: "Level 1",
+    title: "Sit, listen, and find the keys",
+    description:
+      "Start from zero with posture, hand shape, keyboard geography, and the first patterns that make the piano feel less mysterious.",
+  },
+  {
+    level: "Level 2",
+    title: "Rhythm you can actually feel",
+    description:
+      "Learn pulse, counting, simple note values, and how to stay steady without turning practice into math homework.",
+  },
+  {
+    level: "Level 3",
+    title: "Read your first real music",
+    description:
+      "Build the treble and bass clef foundation so notes on the page start connecting to sounds under your hands.",
+  },
+  {
+    level: "Level 4",
+    title: "Use both hands together",
+    description:
+      "Coordinate left and right hand parts with simple exercises that develop control instead of tension.",
+  },
+  {
+    level: "Level 5",
+    title: "Chords and harmony",
+    description:
+      "Understand major, minor, and basic chord shapes so you can hear what is happening instead of just copying notes.",
+  },
+  {
+    level: "Level 6",
+    title: "Scales without boredom",
+    description:
+      "Use scales as a way to train fingering, movement, and sound, not as a punishment before the music starts.",
+  },
+  {
+    level: "Level 7",
+    title: "Phrasing and musical shape",
+    description:
+      "Learn how to make a melody breathe with dynamics, touch, and timing so even simple music sounds alive.",
+  },
+  {
+    level: "Level 8",
+    title: "Practice that sticks",
+    description:
+      "Break hard passages into small wins, fix mistakes cleanly, and build a repeatable practice system.",
+  },
+  {
+    level: "Level 9",
+    title: "Your first performance pieces",
+    description:
+      "Put the foundations together in short pieces that teach reading, rhythm, coordination, and expression at once.",
+  },
+  {
+    level: "Level 10",
+    title: "Ready for the next tier",
+    description:
+      "Finish with the skills you need to step into harder repertoire, including Lionel's cinematic Nightmare arrangements later on.",
+  },
+];
+
+const stats = [
+  { value: "10,000+", label: "Sheet music sold" },
+  { value: "1M+", label: "YouTube subscribers" },
+  { value: "50", label: "Free foundation lessons" },
+];
 
 export default function Home() {
-  const overlayRef = useRef<HTMLDivElement>(null);
+  const [email, setEmail] = useState("");
+  const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Show "You're in!" overlay if Stripe redirected with ?reserved=true
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get("reserved") === "true") {
-      overlayRef.current?.classList.add(styles.show);
-      history.replaceState(null, "", window.location.pathname);
-    }
-  }, []);
-
-  // Scroll fade-in
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) =>
-        entries.forEach(
-          (e) => e.isIntersecting && e.target.classList.add(styles.visible)
-        ),
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add(styles.visible);
+          }
+        }),
       { threshold: 0.12 }
     );
+
     document
       .querySelectorAll(`.${styles.fadeIn}`)
-      .forEach((el) => observer.observe(el));
+      .forEach((element) => observer.observe(element));
+
     return () => observer.disconnect();
   }, []);
 
-  return (
-    <>
-      {/* ── RESERVED OVERLAY ── */}
-      <div
-        className={styles.reservedOverlay}
-        id="reserved-overlay"
-        ref={overlayRef}
-        role="dialog"
-        aria-modal="true"
-      >
-        <div className={styles.reservedEmoji}>🎹</div>
-        <h1 className={styles.reservedTitle}>
-          You&apos;re <em>in.</em>
-        </h1>
-        <p className={styles.reservedSub}>
-          Your spot is locked. Check your email: the simplified Moonlight Sonata
-          Nightmare sheet music is already on its way.
-        </p>
-        <div className={styles.reservedPerks}>
-          <div className={styles.reservedPerk}>
-            <span>✉️</span>
-            <span>Sheet music PDF sent to your email</span>
-          </div>
-          <div className={styles.reservedPerk}>
-            <span>💳</span>
-            <span>Your $1 is now a $10 credit toward the masterclass</span>
-          </div>
-          <div className={styles.reservedPerk}>
-            <span>🔑</span>
-            <span>First access when the masterclass opens</span>
-          </div>
-        </div>
-        <a
-          href={PDF_DOWNLOAD}
-          download="Moonlight Sonata Nightmare Easy - Full Score.pdf"
-          className={styles.btnPrimary}
-          id="overlay-download-btn"
-          style={{ marginBottom: 24 }}
-        >
-          📄 Download Sheet Music Now
-        </a>
-        <p
-          style={{
-            fontSize: "0.9rem",
-            color: "var(--text-muted)",
-            maxWidth: 400,
-          }}
-        >
-          I&apos;ll be in touch soon. In the meantime, go sit at your piano. 🎵
-        </p>
-        <button
-          className={styles.reservedClose}
-          onClick={() =>
-            overlayRef.current?.classList.remove(styles.show)
-          }
-        >
-          Continue to site →
-        </button>
-      </div>
+  async function handleSignup(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setError("");
+    setIsSubmitting(true);
 
-      {/* ── HERO ── */}
+    const metadata = Object.fromEntries(
+      new URLSearchParams(window.location.search).entries()
+    );
+
+    try {
+      const response = await fetch("/api/free-access", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email,
+          metadata: {
+            ...metadata,
+            sourcePath: window.location.pathname,
+          },
+        }),
+      });
+
+      const result = (await response.json().catch(() => null)) as
+        | { redirectTo?: string; error?: string }
+        | null;
+
+      if (!response.ok) {
+        throw new Error(result?.error || "Please try again in a moment.");
+      }
+
+      window.location.assign(result?.redirectTo || "/free-access");
+    } catch (signupError) {
+      setError(
+        signupError instanceof Error
+          ? signupError.message
+          : "Please try again in a moment."
+      );
+      setIsSubmitting(false);
+    }
+  }
+
+  return (
+    <main>
       <section className={styles.hero} id="hero">
         <div className={styles.heroBg} />
         <div className={styles.heroOverlay} />
         <div className={styles.heroContent}>
-          <p className={styles.lionelByline}>LIONEL YU</p>
+          <p className={styles.lionelByline}>The Ultimate Pianist</p>
           <h1>
-            The <em>Ultimate Pianist</em> Masterclass is coming.
+            The first <em>50 lessons</em> are on me.
           </h1>
-          <div className={styles.heroCtas}>
-            <a
-              href={STRIPE_LINK}
-              className={styles.btnPrimary}
-              id="hero-vip-btn"
-            >
-              🎹 Join the VIP Waitlist for $1
-            </a>
-          </div>
-          <p className={styles.heroNote}>
-            Your $1 becomes a $10 credit toward the masterclass.
+          <p className={styles.heroSub}>
+            Start becoming an ultimate pianist with ten levels of real
+            foundation work, taught by Lionel Yu.
           </p>
-        </div>
-        <div className={styles.scrollIndicator}>
-          <svg
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            width={24}
-            height={24}
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={1.5}
-              d="M19 14l-7 7m0 0l-7-7m7 7V3"
-            />
-          </svg>
+          <form className={styles.signupForm} onSubmit={handleSignup}>
+            <label className={styles.srOnly} htmlFor="hero-email">
+              Email address
+            </label>
+            <div className={styles.signupRow}>
+              <input
+                id="hero-email"
+                name="email"
+                type="email"
+                autoComplete="email"
+                inputMode="email"
+                required
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                placeholder="you@example.com"
+                aria-describedby="hero-form-note hero-form-error"
+                className={styles.emailInput}
+              />
+              <button
+                className={styles.btnPrimary}
+                type="submit"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Sending..." : "Get free access"}
+              </button>
+            </div>
+            {error && (
+              <p
+                className={styles.formError}
+                id="hero-form-error"
+                role="alert"
+              >
+                {error}
+              </p>
+            )}
+            <p className={styles.formNote} id="hero-form-note">
+              No spam. Unsubscribe anytime. I respect your inbox.
+            </p>
+          </form>
         </div>
       </section>
 
       <div className={styles.divider} />
 
-      {/* ── YOUR TEACHER ── */}
-      <section id="about" className={styles.section}>
+      <section id="inside" className={styles.section}>
+        <div className={`${styles.sectionIntro} ${styles.fadeIn}`}>
+          <p className={styles.sectionLabel}>What You Get Free</p>
+          <h2 className={styles.sectionTitle}>
+            The first 10 levels of the curriculum.
+          </h2>
+          <p className={styles.sectionBody}>
+            This is not a teaser. It is the full foundation tier of The
+            Ultimate Pianist, built to take you from the beginning to a point
+            where harder music finally has somewhere to land.
+          </p>
+        </div>
+        <div className={`${styles.levelsGrid} ${styles.fadeIn}`}>
+          {freeLevels.map((item) => (
+            <article className={styles.levelCard} key={item.level}>
+              <p className={styles.levelNumber}>{item.level}</p>
+              <h3 className={styles.levelTitle}>{item.title}</h3>
+              <p className={styles.levelDescription}>{item.description}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <div className={styles.divider} />
+
+      <section id="sample" className={styles.section}>
+        <div className={`${styles.sampleSection} ${styles.fadeIn}`}>
+          <div>
+            <p className={styles.sectionLabel}>Sample Lesson</p>
+            <h2 className={styles.sectionTitle}>
+              See the teaching style before you sign up.
+            </h2>
+            <p className={styles.sectionBody}>
+              The best way to know if a course will work for you is to watch a
+              lesson. Drop the intro or first free lesson here as soon as the
+              video is ready.
+            </p>
+          </div>
+          <div
+            className={styles.videoPlaceholder}
+            role="img"
+            aria-label="Sample lesson video placeholder"
+          >
+            <div className={styles.playMark} />
+            <p>Sample lesson video placeholder</p>
+            <span>Embed the intro lesson here when it is ready.</span>
+          </div>
+        </div>
+      </section>
+
+      <div className={styles.divider} />
+
+      <section id="why" className={styles.section}>
         <div className={`${styles.aboutSection} ${styles.fadeIn}`}>
           <div className={styles.aboutImage}>
             <Image
               src="/lionel-concert-hall.jpg"
-              alt="Lionel Yu performing at a concert hall"
+              alt="Lionel Yu performing in a concert hall"
               fill
               sizes="(max-width: 900px) 100vw, 50vw"
-              priority
             />
           </div>
           <div className={styles.aboutContent}>
-            <p className={styles.sectionLabel}>Your Teacher</p>
+            <p className={styles.sectionLabel}>Why This Exists</p>
             <h2 className={styles.sectionTitle}>
-              Hi, I&apos;m Lionel.
+              A real piano course, not bait.
             </h2>
             <p className={styles.sectionBody}>
-              Learn to play my most popular arrangements, broken down into
-              Easy, Medium, and Full versions, taught by me, the person who
-              wrote them.
+              I am giving away the foundation because that is where most people
+              get stuck. If you have ever bought sheet music and then felt lost
+              at the piano, this is the missing layer.
             </p>
             <p className={styles.sectionBody}>
-              For years, thousands of you have bought my sheet music but never
-              learned it because it&apos;s too hard. I&apos;m fixing that. The
-              masterclass opens next week.
+              The pieces are the vehicle. The destination is becoming a
+              stronger pianist. The advanced masterclass keeps going from here,
+              but the first 50 lessons stand on their own.
             </p>
-            <p className={styles.aboutSignoff}>– Lionel Yu</p>
+            <p className={styles.aboutSignoff}>Lionel Yu</p>
           </div>
         </div>
       </section>
 
       <div className={styles.divider} />
 
-      {/* ── SOCIAL PROOF ── */}
       <section id="social-proof" className={styles.statsSection}>
         <div className={`${styles.statsInner} ${styles.fadeIn}`}>
-          <div className={styles.statItem}>
-            <p className={styles.statNumber}>10,000+</p>
-            <p className={styles.statLabel}>Sheet music sold</p>
-          </div>
-          <div className={styles.statDivider} />
-          <div className={styles.statItem}>
-            <p className={styles.statNumber}>1M+</p>
-            <p className={styles.statLabel}>YouTube subscribers</p>
-          </div>
-        </div>
-      </section>
-
-      <div className={styles.divider} />
-
-      {/* ── MANIFESTO ── */}
-      <section id="manifesto" className={styles.manifestoSection}>
-        <p className={`${styles.manifestoText} ${styles.fadeIn}`}>
-          Learn to play piano. Become a great pianist.<br />
-          <em>By playing the pieces you love.</em>
-        </p>
-      </section>
-
-      <div className={styles.divider} />
-
-      {/* ── ZERO TO EXPERT ── */}
-
-      <section id="journey" className={styles.section}>
-        <div className={styles.fadeIn}>
-          <p className={styles.sectionLabel}>The Journey</p>
-          <h2 className={styles.sectionTitle}>
-            From complete beginner<br />to confident pianist.
-          </h2>
-          <p className={styles.sectionBody} style={{ marginBottom: 56 }}>
-            Most piano teachers keep things slow on purpose. They break it into tiny pieces, charge you by the hour, and never show you the mental frameworks that actually make music click. I am going to show you everything, up front.
-          </p>
-          <div className={styles.journeySteps}>
-            {[
-              {
-                step: "01",
-                title: "Start from zero",
-                desc: "100+ foundation lessons cover everything from how to sit at the piano to reading music and basic technique. No prior experience needed.",
-              },
-              {
-                step: "02",
-                title: "Learn how music actually works",
-                desc: "I teach you chord theory, rhythm, and the way professional musicians think, not just how to copy dots on a page. You will start hearing music differently.",
-              },
-              {
-                step: "03",
-                title: "Play the pieces you love",
-                desc: "Start with the Easy version of any piece. Build muscle memory. Then graduate to Medium, then the full arrangement. Real progress, at your pace.",
-              },
-              {
-                step: "04",
-                title: "Master the Nightmare arrangements",
-                desc: "The same cinematic arrangements you have seen on YouTube, broken down bar by bar by the person who wrote them. No secrets held back.",
-              },
-            ].map((s) => (
-              <div key={s.step} className={styles.journeyStep}>
-                <div className={styles.stepNumber}>{s.step}</div>
-                <div className={styles.stepContent}>
-                  <h3 className={styles.stepTitle}>{s.title}</h3>
-                  <p className={styles.stepDesc}>{s.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <div className={styles.divider} />
-
-      {/* ── COST COMPARISON ── */}
-      <section id="value" className={styles.section}>
-        <div className={`${styles.costSection} ${styles.fadeIn}`}>
-          <div className={styles.costLeft}>
-            <p className={styles.sectionLabel}>The Real Cost of "Waiting"</p>
-            <h2 className={styles.sectionTitle}>
-              Private lessons cost $200 a month.<br />This does not.
-            </h2>
-            <p className={styles.sectionBody}>
-              The average piano student pays $150 to $200 per month for private lessons. That is $2,400 a year. Over 5 years, that is $12,000 spent on hourly sessions that may or may not get you where you want to go.<br/><br/>
-              The Ultimate Pianist is a one-time investment. You get 5 years of access, every lesson, every arrangement, every level. No recurring fees, no scheduling, no waiting for your teacher to get to the good stuff.
-            </p>
-            <a href={STRIPE_LINK} className={styles.btnPrimary} id="cost-vip-btn" style={{ marginTop: 36, display: "inline-flex" }}>
-              🎹 Join the VIP Waitlist for $1
-            </a>
-          </div>
-          <div className={styles.costRight}>
-            <div className={styles.costCard + " " + styles.costCardBad}>
-              <p className={styles.costCardLabel}>Traditional Lessons</p>
-              <p className={styles.costCardAmount}>$12,000</p>
-              <p className={styles.costCardSub}>over 5 years, at $200/month</p>
-              <ul className={styles.costList}>
-                <li>Pay per hour, forever</li>
-                <li>Progress at your teacher&apos;s pace</li>
-                <li>Miss a week, lose the momentum</li>
-                <li>Never own the material</li>
-              </ul>
-            </div>
-            <div className={styles.costCard + " " + styles.costCardGood}>
-              <p className={styles.costCardLabel}>The Ultimate Pianist</p>
-              <p className={styles.introPriceLabel}>Intro Price</p>
-              <p className={styles.costCardAmount}>
-                <span className={styles.oldPrice}>$297</span>
-                $197
-              </p>
-              <p className={styles.costCardSub}>one time, 5 years of access</p>
-              <ul className={styles.costList}>
-                <li>Lifetime-style access, no clock running</li>
-                <li>Learn at your own pace, any time</li>
-                <li>Pick up exactly where you left off</li>
-                <li>Keep all downloads</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <div className={styles.divider} />
-
-      {/* ── WHAT'S INSIDE ── */}
-      <section id="inside" className={styles.section}>
-        <div className={`${styles.insideSection} ${styles.fadeIn}`}>
-          <p className={styles.sectionLabel}>What&apos;s Inside</p>
-          <h2 className={styles.sectionTitle}>
-            Everything you need to actually play, not just own.
-          </h2>
-          <p className={styles.sectionBody}>
-            Every piece in the masterclass is taught at multiple difficulty
-            levels. You choose your starting point and level up at your own
-            pace.
-          </p>
-        </div>
-        <div className={`${styles.cardsGrid} ${styles.fadeIn}`}>
-          {[
-            {
-              icon: "🎵",
-              title: "Multi-Level Breakdowns",
-              desc: "Every piece taught at Easy, Medium, and Full difficulty, so you always have a playable version and a challenge to grow into.",
-            },
-            {
-              icon: "🎹",
-              title: "Technique Deep Dives",
-              desc: "I show you how I think about each section: fingering, dynamics, timing, the exact things that make a piece sound right.",
-            },
-            {
-              icon: "📄",
-              title: "Sheet Music Included",
-              desc: "Every level comes with its own arrangement. Download it, print it, put it on your iPad and start with the version that fits you today.",
-            },
-            {
-              icon: "🏛️",
-              title: "100+ Foundation Lessons",
-              desc: "Brand new to piano? There is a full fundamentals track inside. You are not dropped into the deep end.",
-            },
-          ].map((card) => (
-            <div key={card.title} className={styles.card}>
-              <span className={styles.cardIcon}>{card.icon}</span>
-              <h3 className={styles.cardTitle}>{card.title}</h3>
-              <p className={styles.cardDesc}>{card.desc}</p>
+          {stats.map((stat) => (
+            <div className={styles.statItem} key={stat.label}>
+              <p className={styles.statNumber}>{stat.value}</p>
+              <p className={styles.statLabel}>{stat.label}</p>
             </div>
           ))}
         </div>
-        <figure className={`${styles.sheetPreview} ${styles.fadeIn}`}>
-          <div className={styles.sheetPreviewImage}>
-            <Image
-              src="/sheet_music_example.png"
-              alt="Example of sheet music from the masterclass"
-              width={920}
-              height={510}
-              sizes="(max-width: 900px) 100vw, 900px"
-            />
-          </div>
-          <figcaption className={styles.sheetPreviewCaption}>
-            A glimpse of the sheet music you&apos;ll get inside.
-          </figcaption>
-        </figure>
       </section>
 
       <div className={styles.divider} />
 
-      {/* ── PIECES ── */}
-      <section id="pieces" className={styles.section}>
-        <div className={styles.fadeIn}>
-          <p className={styles.sectionLabel}>First Pieces Launching</p>
+      <section id="testimonials" className={styles.section}>
+        <div className={`${styles.testimonialSection} ${styles.fadeIn}`}>
+          <p className={styles.sectionLabel}>Student Notes</p>
           <h2 className={styles.sectionTitle}>
-            Start with the pieces
-            <br />
-            you already love.
+            Add student proof here when it is ready.
           </h2>
-          <div className={styles.piecesList}>
-            {[
-              {
-                emoji: "🌙",
-                name: "Moonlight Sonata Nightmare",
-                levels: "Easy · Medium · Full Arrangement",
-                badge: "Launching First",
-              },
-              {
-                emoji: "🌸",
-                name: "Fur Elise Nightmare",
-                levels: "Easy · Medium · Full Arrangement",
-                badge: "Coming Soon",
-              },
-              {
-                emoji: "🎤",
-                name: "Still D.R.E.",
-                levels: "Easy · Medium · Full Arrangement",
-                badge: "Coming Soon",
-              },
-              {
-                emoji: "🎶",
-                name: "More pieces added each month",
-                levels: "VIP members vote on what gets added next",
-                badge: null,
-              },
-            ].map((piece) => (
-              <div key={piece.name} className={styles.pieceRow}>
-                <span className={styles.pieceEmoji}>{piece.emoji}</span>
-                <div className={styles.pieceInfo}>
-                  <div className={styles.pieceName}>{piece.name}</div>
-                  <div className={styles.pieceLevels}>{piece.levels}</div>
-                </div>
-                {piece.badge && (
-                  <span className={styles.pieceBadge}>{piece.badge}</span>
-                )}
-              </div>
-            ))}
-          </div>
+          <p className={styles.sectionBody}>
+            This space is reserved for a few short student quotes, screenshots,
+            or YouTube comments once the free tier has its first real feedback.
+          </p>
         </div>
       </section>
 
       <div className={styles.divider} />
 
-      {/* ── VIP OFFER ── */}
-      <section id="vip" className={styles.section}>
-        <div className={`${styles.offerSection} ${styles.fadeIn}`}>
-          <p className={styles.sectionLabel}>VIP Waitlist</p>
+      <section id="next" className={styles.section}>
+        <div className={`${styles.nextSection} ${styles.fadeIn}`}>
+          <p className={styles.sectionLabel}>What Comes After</p>
           <h2 className={styles.sectionTitle}>
-            Join the VIP Waitlist
-            <br />
-            before it opens.
+            After the foundation, the path keeps going.
           </h2>
           <p className={styles.sectionBody}>
-            The masterclass opens next week. VIP members get early access, a
-            locked-in rate, and a credit-doubling bonus toward the{" "}
+            When you finish the free 50 lessons, the advanced masterclass is
+            where the bigger repertoire lives: the Nightmare arrangements,
+            deeper technique, and the pieces that made MusicalBasics feel
+            different in the first place.
+          </p>
+          <p className={styles.sectionBody}>
+            No pricing here. No countdown. First, build the foundation. If you
+            want to go deeper after that, you will know exactly why.
+          </p>
+        </div>
+      </section>
+
+      <footer className={styles.footer}>
+        <div className={styles.footerInner}>
+          <p className={styles.footerBrand}>The Ultimate Pianist</p>
+          <nav className={styles.footerLinks} aria-label="Footer links">
+            <a
+              href="https://www.youtube.com/@MusicalBasics"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              YouTube
+            </a>
+            <a href="mailto:musicalbasics@gmail.com">Email Lionel</a>
             <a
               href="https://dreamplaypianos.com"
               target="_blank"
               rel="noopener noreferrer"
-              className={styles.inlineLink}
             >
-              DreamPlay keyboard
+              We also make pianos
             </a>
-            .
+          </nav>
+          <p className={styles.footerFine}>
+            &copy; 2026 The Ultimate Pianist. Built for pianists who refuse to
+            give up.
           </p>
-          <div className={styles.offerCard}>
-            <div className={styles.offerPrice}>$1</div>
-            <p className={styles.offerSub}>
-              One-time reservation · Fully refundable · No subscription trap
-            </p>
-            <ul className={styles.offerPerks}>
-              {[
-                {
-                  label: "10x your $1:",
-                  text: "instantly becomes a $10 credit toward the masterclass",
-                },
-                {
-                  label: "DOUBLE",
-                  text: (
-                    <>
-                      your keyboard credits: spend $197 on the masterclass,
-                      get $394 toward a{" "}
-                      <a
-                        href="https://dreamplaypianos.com"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={styles.inlineLink}
-                      >
-                        DreamPlay keyboard
-                      </a>
-                    </>
-                  ),
-                },
-                {
-                  label: "24-hour early access",
-                  text: "before the public launch",
-                },
-                {
-                  label: "Instant download:",
-                  text: "simplified Easy arrangement of Moonlight Sonata Nightmare",
-                },
-                {
-                  label: "Vote",
-                  text: "on which pieces get added next",
-                },
-              ].map((perk) => (
-                <li key={perk.label} className={styles.offerPerk}>
-                  <span className={styles.perkCheck}>✓</span>
-                  <span>
-                    <strong>{perk.label}</strong> {perk.text}
-                  </span>
-                </li>
-              ))}
-            </ul>
-            <a
-              href={STRIPE_LINK}
-              className={styles.btnPrimary}
-              id="vip-reserve-btn"
-              style={{ fontSize: "1rem", padding: "20px 48px" }}
-            >
-              🎹 Join the VIP Waitlist for $1
-            </a>
-          </div>
         </div>
-      </section>
-
-      {/* ── FOOTER ── */}
-      <footer className={styles.footer}>
-        <p className={styles.footerSignoff}>More soon. Lionel</p>
-        <p style={{ marginTop: 12 }}>
-          © 2024 The Ultimate Pianist · Made with love for pianists who refuse
-          to give up 🎹
-        </p>
       </footer>
-    </>
+    </main>
   );
 }
