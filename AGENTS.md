@@ -26,6 +26,7 @@ Canonical copy lives in [docs/website_copy_v1.md](docs/website_copy_v1.md). When
 ## Working conventions
 - **Plan first for multi-file or multi-section features.** Propose the approach before editing. Small copy tweaks can go straight to edit.
 - **Small focused commits.** Match existing style: `feat:`, `fix:` prefix, one concern per commit.
+- **Always push after every change.** After committing any change, push it to the active remote branch before reporting done.
 - **Don't invent sections.** Proposed new landing sections go in a draft `.md` first; only code them after the copy is approved.
 - **For UI changes:** run `pnpm dev` and verify in browser before reporting done. Type-checks don't catch layout regressions.
 
