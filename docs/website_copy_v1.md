@@ -37,7 +37,7 @@
 > The first 10 levels of the curriculum.
 
 **Body:**
-> This is not a teaser. It is the full foundation tier of The Ultimate Pianist, built to take you from the beginning to a point where harder music finally has somewhere to land.
+> The full foundation tier. Ten levels that take you from the first time at the piano to a place where harder music finally lands.
 
 ### Level Breakdown
 
@@ -88,17 +88,17 @@
 
 ---
 
-## Why This Exists
+## The Foundation
 
-**Label:** Why This Exists
+**Label:** The Foundation
 
 **H2:**
-> A real piano course, not bait.
+> Where most people get stuck.
 
 **Body:**
-> I am giving away the foundation because that is where most people get stuck. If you have ever bought sheet music and then felt lost at the piano, this is the missing layer.
+> If you have ever bought sheet music and felt lost at the piano, this is the layer you were missing.
 >
-> The pieces are the vehicle. The destination is becoming a stronger pianist. The advanced masterclass keeps going from here, but the first 50 lessons stand on their own.
+> The pieces are the vehicle. The destination is becoming a stronger pianist.
 
 **Signoff:** Lionel Yu
 
@@ -132,9 +132,7 @@
 > After the foundation, the path keeps going.
 
 **Body:**
-> When you finish the free 50 lessons, the advanced masterclass is where the bigger repertoire lives: the Nightmare arrangements, deeper technique, and the pieces that made MusicalBasics feel different in the first place.
->
-> No pricing here. No countdown. First, build the foundation. If you want to go deeper after that, you will know exactly why.
+> When you finish the foundation, the advanced masterclass picks up: Nightmare arrangements, deeper technique, harder repertoire.
 
 ---
 
@@ -168,5 +166,5 @@
 - Lionel speaks as himself.
 - No em dashes in prose.
 - Single CTA: Get free access.
-- No pricing, Stripe checkout, VIP waitlist, DreamPlay multiplier, urgency, countdown, or limited-spots framing.
+- Keep the homepage focused on free access, email capture, and the foundation tier.
 - DreamPlay appears only as a footer link labeled "We also make pianos."

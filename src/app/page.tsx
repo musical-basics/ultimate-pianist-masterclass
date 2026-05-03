@@ -203,9 +203,8 @@ export default function Home() {
             The first 10 levels of the curriculum.
           </h2>
           <p className={styles.sectionBody}>
-            This is not a teaser. It is the full foundation tier of The
-            Ultimate Pianist, built to take you from the beginning to a point
-            where harder music finally has somewhere to land.
+            The full foundation tier. Ten levels that take you from the first
+            time at the piano to a place where harder music finally lands.
           </p>
         </div>
         <div className={`${styles.levelsGrid} ${styles.fadeIn}`}>
@@ -259,19 +258,17 @@ export default function Home() {
             />
           </div>
           <div className={styles.aboutContent}>
-            <p className={styles.sectionLabel}>Why This Exists</p>
+            <p className={styles.sectionLabel}>The Foundation</p>
             <h2 className={styles.sectionTitle}>
-              A real piano course, not bait.
+              Where most people get stuck.
             </h2>
             <p className={styles.sectionBody}>
-              I am giving away the foundation because that is where most people
-              get stuck. If you have ever bought sheet music and then felt lost
-              at the piano, this is the missing layer.
+              If you have ever bought sheet music and felt lost at the piano,
+              this is the layer you were missing.
             </p>
             <p className={styles.sectionBody}>
               The pieces are the vehicle. The destination is becoming a
-              stronger pianist. The advanced masterclass keeps going from here,
-              but the first 50 lessons stand on their own.
+              stronger pianist.
             </p>
             <p className={styles.aboutSignoff}>Lionel Yu</p>
           </div>
@@ -315,14 +312,8 @@ export default function Home() {
             After the foundation, the path keeps going.
           </h2>
           <p className={styles.sectionBody}>
-            When you finish the free 50 lessons, the advanced masterclass is
-            where the bigger repertoire lives: the Nightmare arrangements,
-            deeper technique, and the pieces that made MusicalBasics feel
-            different in the first place.
-          </p>
-          <p className={styles.sectionBody}>
-            No pricing here. No countdown. First, build the foundation. If you
-            want to go deeper after that, you will know exactly why.
+            When you finish the foundation, the advanced masterclass picks up:
+            Nightmare arrangements, deeper technique, harder repertoire.
           </p>
         </div>
       </section>
