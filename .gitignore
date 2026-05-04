@@ -22,3 +22,7 @@ repomix*.xml
 b_slrrgaDt1UP/
 archive/v0-backup/
 reference/
+
+# Teachable lesson exports (source material for the porter, not output)
+*_Teachable_files/
+*_Teachable.html
