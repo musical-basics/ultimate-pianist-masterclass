@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "port-lesson": "tsx scripts/port-teachable-lesson.ts"
+    "port-lesson": "tsx scripts/port-teachable-lesson.ts",
+    "scrape": "tsx scripts/scrape-teachable.ts"
   },
   "dependencies": {
     "gray-matter": "^4.0.3",
@@ -25,6 +26,9 @@
     "domhandler": "^6.0.1",
     "eslint": "^9",
     "eslint-config-next": "16.2.3",
+    "playwright": "^1.59.1",
+    "playwright-extra": "^4.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2",
     "tsx": "^4.21.0",
     "turndown": "^7.2.4",
     "typescript": "^5"

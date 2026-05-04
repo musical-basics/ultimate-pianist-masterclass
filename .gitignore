@@ -26,3 +26,7 @@ reference/
 # Teachable lesson exports (source material for the porter, not output)
 *_Teachable_files/
 *_Teachable.html
+
+# Teachable scraper artifacts (browser profile + intermediate scraped HTML)
+.teachable-profile/
+.teachable-cache/

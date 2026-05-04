@@ -1,0 +1,514 @@
+import { promises as fs } from "node:fs";
+import path from "node:path";
+import { parseArgs } from "node:util";
+import { chromium } from "playwright-extra";
+import StealthPlugin from "puppeteer-extra-plugin-stealth";
+import type { BrowserContext, Page } from "playwright";
+import { portTeachableLesson } from "../src/lib/port-teachable";
+
+chromium.use(StealthPlugin());
+
+const REPO_ROOT = process.cwd();
+const PROFILE_DIR = path.join(REPO_ROOT, ".teachable-profile");
+const CACHE_DIR = path.join(REPO_ROOT, ".teachable-cache");
+const CONTENT_ROOT = path.join(REPO_ROOT, "content", "courses");
+const SCHOOL = "musicalbasics-academy";
+const BASE_URL = `https://${SCHOOL}.teachable.com`;
+const ADMIN_URL_RE = /\/admin(-app)?\//;
+
+type Lesson = {
+  id: string;
+  title: string;
+  slug: string;
+};
+
+type Section = {
+  title: string;
+  slug: string;
+  lessons: Lesson[];
+};
+
+type Curriculum = {
+  courseId: string;
+  courseTitle: string;
+  scrapedAt: string;
+  sections: Section[];
+};
+
+async function openContext(headless: boolean): Promise<BrowserContext> {
+  await fs.mkdir(PROFILE_DIR, { recursive: true });
+  return chromium.launchPersistentContext(PROFILE_DIR, {
+    headless,
+    viewport: { width: 1280, height: 900 },
+    userAgent:
+      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+  });
+}
+
+async function getOrOpenPage(context: BrowserContext): Promise<Page> {
+  const pages = context.pages();
+  return pages.length > 0 ? pages[0] : await context.newPage();
+}
+
+function slugify(s: string): string {
+  return s
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 80) || "untitled";
+}
+
+function paddedIndex(i: number): string {
+  return i.toString().padStart(2, "0");
+}
+
+function sanitizeFilename(name: string): string {
+  return name
+    .replace(/ /g, "_")
+    .replace(/[\s+]+/g, "_")
+    .replace(/[^a-zA-Z0-9._-]/g, "_")
+    .replace(/_+/g, "_");
+}
+
+async function isLoggedIn(page: Page): Promise<boolean> {
+  await page.goto(`${BASE_URL}/admin/dashboard`, { waitUntil: "domcontentloaded" });
+  const url = page.url();
+  return ADMIN_URL_RE.test(url) && !url.includes("/sign_in");
+}
+
+async function cmdLogin(_args: string[]) {
+  console.log("Opening a browser. Log in to Teachable, then return here.");
+  console.log("The window will close automatically once you're authenticated.");
+  console.log("");
+
+  const context = await openContext(false);
+  const page = await getOrOpenPage(context);
+
+  await page.goto(`${BASE_URL}/admin/sign_in`, { waitUntil: "domcontentloaded" });
+
+  const start = Date.now();
+  const TIMEOUT_MS = 5 * 60 * 1000;
+  while (Date.now() - start < TIMEOUT_MS) {
+    const url = page.url();
+    if (ADMIN_URL_RE.test(url) && !url.includes("/sign_in")) {
+      console.log("");
+      console.log("Login detected. Saving session.");
+      break;
+    }
+    await page.waitForTimeout(1000);
+  }
+
+  await context.close();
+  console.log(`Profile saved to ${PROFILE_DIR}`);
+  console.log("Run 'pnpm scrape curriculum --course-id <id>' next.");
+}
+
+async function cmdCurriculum(args: string[]) {
+  const { values } = parseArgs({
+    args,
+    options: {
+      "course-id": { type: "string" },
+      headless: { type: "boolean", default: false },
+    },
+  });
+  const courseId = values["course-id"];
+  if (!courseId) {
+    console.error("Missing --course-id");
+    process.exit(1);
+  }
+
+  const context = await openContext(values.headless ?? false);
+  const page = await getOrOpenPage(context);
+
+  if (!(await isLoggedIn(page))) {
+    console.error("Not logged in. Run 'pnpm scrape login' first.");
+    await context.close();
+    process.exit(1);
+  }
+
+  const curriculumUrl = `${BASE_URL}/admin-app/courses/${courseId}/curriculum`;
+  console.log(`Loading ${curriculumUrl}`);
+  await page.goto(curriculumUrl, { waitUntil: "domcontentloaded" });
+
+  await page.waitForSelector('a[href*="/curriculum/lessons/"]', { timeout: 30000 });
+  await page.waitForTimeout(1500);
+
+  const courseTitle = await page
+    .locator("h1, h2")
+    .filter({ hasText: /.+/ })
+    .first()
+    .textContent()
+    .then((t) => t?.trim() ?? "");
+
+  const sections = await page.evaluate(() => {
+    function closestSectionTitle(el: Element): string {
+      let cur: Element | null = el;
+      while (cur) {
+        const heading = cur.querySelector(":scope > div h1, :scope > div h2, :scope > div h3");
+        if (heading && heading.textContent && heading.textContent.trim().length > 0) {
+          return heading.textContent.trim();
+        }
+        cur = cur.parentElement;
+      }
+      return "";
+    }
+
+    const lessonAnchors = Array.from(
+      document.querySelectorAll('a[href*="/curriculum/lessons/"]'),
+    ) as HTMLAnchorElement[];
+
+    type RawLesson = { id: string; title: string; sectionTitle: string };
+    const raw: RawLesson[] = [];
+    const seen = new Set<string>();
+
+    for (const a of lessonAnchors) {
+      const m = a.href.match(/\/lessons\/(\d+)/);
+      if (!m) continue;
+      const id = m[1];
+      if (seen.has(id)) continue;
+      seen.add(id);
+      const title = (a.textContent || "").trim();
+      if (!title) continue;
+
+      let cursor: Element | null = a;
+      let sectionTitle = "";
+      while (cursor && !sectionTitle) {
+        const sib: Element | null = cursor.previousElementSibling;
+        if (sib) {
+          const h = sib.querySelector("h1, h2, h3");
+          if (h && h.textContent && h.textContent.trim().length > 0) {
+            sectionTitle = h.textContent.trim();
+            break;
+          }
+          cursor = sib;
+        } else {
+          cursor = cursor.parentElement;
+        }
+      }
+      if (!sectionTitle) sectionTitle = closestSectionTitle(a);
+
+      raw.push({ id, title, sectionTitle: sectionTitle || "Uncategorized" });
+    }
+
+    const order: string[] = [];
+    const grouped = new Map<string, RawLesson[]>();
+    for (const r of raw) {
+      if (!grouped.has(r.sectionTitle)) {
+        grouped.set(r.sectionTitle, []);
+        order.push(r.sectionTitle);
+      }
+      grouped.get(r.sectionTitle)!.push(r);
+    }
+    return order.map((sectionTitle) => ({
+      title: sectionTitle,
+      lessons: grouped.get(sectionTitle)!.map((l) => ({ id: l.id, title: l.title })),
+    }));
+  });
+
+  const enriched: Curriculum = {
+    courseId,
+    courseTitle,
+    scrapedAt: new Date().toISOString(),
+    sections: sections.map((s, sectionIdx) => ({
+      title: s.title,
+      slug: `${paddedIndex(sectionIdx)}-${slugify(s.title)}`,
+      lessons: s.lessons.map((l, lessonIdx) => ({
+        id: l.id,
+        title: l.title,
+        slug: `${paddedIndex(lessonIdx + 1)}-${slugify(l.title)}`,
+      })),
+    })),
+  };
+
+  const outDir = path.join(CACHE_DIR, courseId);
+  await fs.mkdir(outDir, { recursive: true });
+  const outPath = path.join(outDir, "curriculum.json");
+  await fs.writeFile(outPath, JSON.stringify(enriched, null, 2), "utf8");
+
+  console.log("");
+  console.log(`Course: ${enriched.courseTitle || "(no title found)"}`);
+  console.log(`Sections: ${enriched.sections.length}`);
+  for (const section of enriched.sections) {
+    console.log(`  ${section.slug} (${section.lessons.length} lessons)`);
+    for (const lesson of section.lessons) {
+      console.log(`    ${lesson.slug}  [${lesson.id}]`);
+    }
+  }
+  console.log("");
+  console.log(`Wrote ${outPath}`);
+
+  await context.close();
+}
+
+async function scrapeLessonHtml(
+  context: BrowserContext,
+  courseId: string,
+  lessonId: string,
+): Promise<{ html: string; localizedHtmlPath: string; localizedDir: string; assetCount: number }> {
+  const page = await getOrOpenPage(context);
+  const lessonUrl = `${BASE_URL}/admin-app/courses/${courseId}/curriculum/lessons/${lessonId}`;
+
+  console.log(`  Loading ${lessonUrl}`);
+  await page.goto(lessonUrl, { waitUntil: "domcontentloaded" });
+  await page
+    .waitForSelector(
+      'div[class*="_lectureEditorContainer"], [data-testid="attachment-content"]',
+      { timeout: 30000 },
+    )
+    .catch(() => {
+      console.warn(
+        `  ! Lecture editor container not found within 30s — page may still load`,
+      );
+    });
+  await page.waitForTimeout(1500);
+
+  const html = await page.content();
+
+  const lessonDir = path.join(CACHE_DIR, courseId, lessonId);
+  const assetsDir = path.join(lessonDir, "assets");
+  await fs.mkdir(assetsDir, { recursive: true });
+
+  const imageUrls = await page.$$eval(
+    'img[src^="https://uploads.teachablecdn.com"]',
+    (imgs) => imgs.map((i) => (i as HTMLImageElement).src),
+  );
+
+  let assetCount = 0;
+  const urlToLocal = new Map<string, string>();
+
+  for (const url of imageUrls) {
+    const u = new URL(url);
+    const original = decodeURIComponent(path.basename(u.pathname));
+    const localFilename = sanitizeFilename(original);
+    if (urlToLocal.has(url)) continue;
+
+    try {
+      const response = await context.request.get(url);
+      if (!response.ok()) {
+        console.warn(`  ! Failed to fetch ${url}: HTTP ${response.status()}`);
+        continue;
+      }
+      const buffer = await response.body();
+      await fs.writeFile(path.join(assetsDir, localFilename), buffer);
+      urlToLocal.set(url, `./assets/${localFilename}`);
+      assetCount += 1;
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      console.warn(`  ! Failed to download ${url}: ${message}`);
+    }
+  }
+
+  let localizedHtml = html;
+  for (const [url, local] of urlToLocal) {
+    const escaped = url.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    localizedHtml = localizedHtml.replace(new RegExp(escaped, "g"), local);
+  }
+
+  const htmlPath = path.join(lessonDir, "lesson.html");
+  await fs.writeFile(htmlPath, localizedHtml, "utf8");
+
+  return { html: localizedHtml, localizedHtmlPath: htmlPath, localizedDir: lessonDir, assetCount };
+}
+
+async function cmdLesson(args: string[]) {
+  const { values, positionals } = parseArgs({
+    args,
+    options: {
+      "course-id": { type: "string" },
+      headless: { type: "boolean", default: false },
+    },
+    allowPositionals: true,
+  });
+  const lessonId = positionals[0];
+  const courseId = values["course-id"];
+  if (!lessonId || !courseId) {
+    console.error("Usage: pnpm scrape lesson <lesson-id> --course-id <course-id>");
+    process.exit(1);
+  }
+
+  const context = await openContext(values.headless ?? false);
+  const page = await getOrOpenPage(context);
+  if (!(await isLoggedIn(page))) {
+    console.error("Not logged in. Run 'pnpm scrape login' first.");
+    await context.close();
+    process.exit(1);
+  }
+
+  const result = await scrapeLessonHtml(context, courseId, lessonId);
+  console.log("");
+  console.log(`Wrote ${result.localizedHtmlPath}`);
+  console.log(`  Assets: ${result.assetCount}`);
+
+  await context.close();
+}
+
+async function cmdAll(args: string[]) {
+  const { values } = parseArgs({
+    args,
+    options: {
+      "course-id": { type: "string" },
+      course: { type: "string" },
+      headless: { type: "boolean", default: false },
+      delay: { type: "string", default: "1500" },
+    },
+  });
+  const courseId = values["course-id"];
+  const courseSlug = values.course;
+  if (!courseId || !courseSlug) {
+    console.error(
+      "Usage: pnpm scrape all --course-id <id> --course <content-slug>",
+    );
+    process.exit(1);
+  }
+  const delayMs = parseInt(values.delay ?? "1500", 10);
+
+  const curriculumPath = path.join(CACHE_DIR, courseId, "curriculum.json");
+  const curriculumRaw = await fs.readFile(curriculumPath, "utf8").catch(() => null);
+  if (!curriculumRaw) {
+    console.error(
+      `No curriculum at ${curriculumPath}. Run 'pnpm scrape curriculum --course-id ${courseId}' first.`,
+    );
+    process.exit(1);
+  }
+  const curriculum = JSON.parse(curriculumRaw) as Curriculum;
+
+  const context = await openContext(values.headless ?? false);
+  const page = await getOrOpenPage(context);
+  if (!(await isLoggedIn(page))) {
+    console.error("Not logged in. Run 'pnpm scrape login' first.");
+    await context.close();
+    process.exit(1);
+  }
+
+  const courseRoot = path.join(CONTENT_ROOT, courseSlug);
+  await fs.mkdir(courseRoot, { recursive: true });
+  await fs.writeFile(
+    path.join(courseRoot, "_course.json"),
+    JSON.stringify({ title: curriculum.courseTitle || courseSlug }, null, 2) + "\n",
+    "utf8",
+  );
+
+  let scraped = 0;
+  let ported = 0;
+  for (const section of curriculum.sections) {
+    const sectionDir = path.join(courseRoot, section.slug);
+    await fs.mkdir(sectionDir, { recursive: true });
+    await fs.writeFile(
+      path.join(sectionDir, "_section.json"),
+      JSON.stringify({ title: section.title }, null, 2) + "\n",
+      "utf8",
+    );
+
+    for (const lesson of section.lessons) {
+      console.log("");
+      console.log(`Scraping ${section.slug}/${lesson.slug} [${lesson.id}]`);
+
+      const scrapeResult = await scrapeLessonHtml(context, courseId, lesson.id);
+      scraped += 1;
+
+      const lessonDir = path.join(sectionDir, lesson.slug);
+      await fs.mkdir(lessonDir, { recursive: true });
+      const lessonAssetsDir = path.join(lessonDir, "assets");
+      await fs.mkdir(lessonAssetsDir, { recursive: true });
+
+      const portResult = portTeachableLesson({
+        html: scrapeResult.html,
+        htmlPath: scrapeResult.localizedHtmlPath,
+      });
+
+      let assetsCopied = 0;
+      for (const asset of portResult.assets) {
+        let copied = false;
+        for (const candidate of asset.sourceCandidates) {
+          try {
+            await fs.copyFile(
+              candidate,
+              path.join(lessonAssetsDir, asset.destFilename),
+            );
+            copied = true;
+            assetsCopied += 1;
+            break;
+          } catch {
+            // try next candidate
+          }
+        }
+        if (!copied) {
+          portResult.warnings.push(
+            `Could not locate asset "${asset.destFilename}" in scrape cache`,
+          );
+        }
+      }
+
+      await fs.writeFile(path.join(lessonDir, "index.mdx"), portResult.mdx, "utf8");
+      ported += 1;
+
+      console.log(
+        `  -> ${path.relative(REPO_ROOT, lessonDir)}/index.mdx ` +
+          `(videos=${portResult.videos.length}, pdfs=${portResult.resources.length}, ` +
+          `images=${assetsCopied}/${portResult.assets.length})`,
+      );
+      if (portResult.warnings.length > 0) {
+        for (const w of portResult.warnings) console.log(`     ! ${w}`);
+      }
+
+      await page.waitForTimeout(delayMs);
+    }
+  }
+
+  console.log("");
+  console.log(`Done. Scraped ${scraped} lessons, ported ${ported} to MDX.`);
+  console.log(`Output: ${path.relative(REPO_ROOT, courseRoot)}`);
+  console.log("Next: re-upload videos to Mux, upload PDFs, swap TODO_UPLOAD placeholders.");
+
+  await context.close();
+}
+
+function printHelp() {
+  console.log(
+    [
+      "Usage: pnpm scrape <command> [options]",
+      "",
+      "Commands:",
+      "  login                                       Open browser; log in to Teachable manually",
+      "  curriculum --course-id <id>                 Fetch curriculum tree -> .teachable-cache/<id>/curriculum.json",
+      "  lesson <lesson-id> --course-id <id>         Fetch one lesson -> .teachable-cache/<id>/<lesson-id>/",
+      "  all --course-id <id> --course <slug>        Scrape every lesson and port to content/courses/<slug>/",
+      "",
+      "Common flags:",
+      "  --headless           Run without a visible browser window (login won't work headless)",
+      "  --delay <ms>         (all) Delay between lesson requests; default 1500ms",
+    ].join("\n"),
+  );
+}
+
+async function main() {
+  const [, , subcommand, ...rest] = process.argv;
+  switch (subcommand) {
+    case "login":
+      await cmdLogin(rest);
+      break;
+    case "curriculum":
+      await cmdCurriculum(rest);
+      break;
+    case "lesson":
+      await cmdLesson(rest);
+      break;
+    case "all":
+      await cmdAll(rest);
+      break;
+    case "--help":
+    case "-h":
+    case undefined:
+      printHelp();
+      break;
+    default:
+      console.error(`Unknown command: ${subcommand}`);
+      printHelp();
+      process.exit(1);
+  }
+}
+
+main().catch((err) => {
+  console.error(err);
+  process.exit(1);
+});
