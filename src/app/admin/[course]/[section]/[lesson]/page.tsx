@@ -7,6 +7,21 @@ import styles from "../../../admin.module.css";
 
 export const dynamic = "force-dynamic";
 
+function rewriteLessonAssetPaths(
+  source: string,
+  course: string,
+  section: string,
+  lesson: string,
+): string {
+  const prefix = `/api/lesson-asset/${encodeURIComponent(course)}/${encodeURIComponent(section)}/${encodeURIComponent(lesson)}`;
+  return source
+    .replace(/\]\(\.\/assets\/([^)\s]+)\)/g, (_, file) => `](${prefix}/${file})`)
+    .replace(
+      /(src|href)=(["'])\.\/assets\/([^"']+)\2/g,
+      (_, attr, q, file) => `${attr}=${q}${prefix}/${file}${q}`,
+    );
+}
+
 export default async function LessonPreview({
   params,
 }: {
@@ -23,11 +38,18 @@ export default async function LessonPreview({
 
   const section = course.sections.find((s) => s.slug === sectionSlug);
 
+  const rewrittenSource = rewriteLessonAssetPaths(
+    lesson.rawContent,
+    courseSlug,
+    sectionSlug,
+    lessonSlug,
+  );
+
   let mdxBody: React.ReactNode;
   let compileError: string | null = null;
   try {
     const compiled = await compileMDX({
-      source: lesson.rawContent,
+      source: rewrittenSource,
       components: lessonComponents,
       options: { parseFrontmatter: false },
     });
