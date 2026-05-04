@@ -13,8 +13,29 @@ const PROFILE_DIR = path.join(REPO_ROOT, ".teachable-profile");
 const CACHE_DIR = path.join(REPO_ROOT, ".teachable-cache");
 const CONTENT_ROOT = path.join(REPO_ROOT, "content", "courses");
 const SCHOOL = "musicalbasics-academy";
-const BASE_URL = `https://${SCHOOL}.teachable.com`;
-const ADMIN_URL_RE = /\/admin(-app)?\//;
+const ACADEMY_HOST = `${SCHOOL}.teachable.com`;
+const BASE_URL = `https://${ACADEMY_HOST}`;
+
+function isAuthedUrl(url: string): boolean {
+  try {
+    const u = new URL(url);
+    if (u.hostname !== ACADEMY_HOST) return false;
+    const p = u.pathname;
+    if (p.includes("/sign_in") || p.includes("/identity/login")) return false;
+    return p.startsWith("/admin-app") || p.startsWith("/admin");
+  } catch {
+    return false;
+  }
+}
+
+async function waitForCloudflare(page: Page, maxMs = 30000): Promise<void> {
+  const start = Date.now();
+  while (Date.now() - start < maxMs) {
+    const title = await page.title().catch(() => "");
+    if (!title.toLowerCase().includes("just a moment")) return;
+    await page.waitForTimeout(1500);
+  }
+}
 
 type Lesson = {
   id: string;
@@ -71,36 +92,64 @@ function sanitizeFilename(name: string): string {
 }
 
 async function isLoggedIn(page: Page): Promise<boolean> {
-  await page.goto(`${BASE_URL}/admin/dashboard`, { waitUntil: "domcontentloaded" });
-  const url = page.url();
-  return ADMIN_URL_RE.test(url) && !url.includes("/sign_in");
+  await page.goto(`${BASE_URL}/admin-app/courses`, { waitUntil: "domcontentloaded" });
+  await waitForCloudflare(page);
+  await page.waitForLoadState("networkidle", { timeout: 8000 }).catch(() => {});
+  return isAuthedUrl(page.url());
 }
 
 async function cmdLogin(_args: string[]) {
-  console.log("Opening a browser. Log in to Teachable, then return here.");
-  console.log("The window will close automatically once you're authenticated.");
+  console.log("Opening a browser. Log in fully, including 2FA if prompted.");
+  console.log("");
+  console.log("Steps:");
+  console.log("  1. Enter your email + password");
+  console.log("  2. Complete the OTP / 2FA step if Teachable asks");
+  console.log("  3. Wait until you reach the admin dashboard");
+  console.log("");
+  console.log(
+    "The browser will close itself once you're on the academy admin app.",
+  );
+  console.log("If anything goes wrong, close the browser and re-run this command.");
   console.log("");
 
   const context = await openContext(false);
   const page = await getOrOpenPage(context);
-
   await page.goto(`${BASE_URL}/admin/sign_in`, { waitUntil: "domcontentloaded" });
 
   const start = Date.now();
   const TIMEOUT_MS = 5 * 60 * 1000;
+  let lastUrl = "";
+  let detected = false;
   while (Date.now() - start < TIMEOUT_MS) {
     const url = page.url();
-    if (ADMIN_URL_RE.test(url) && !url.includes("/sign_in")) {
-      console.log("");
-      console.log("Login detected. Saving session.");
+    if (url !== lastUrl) {
+      console.log(`  -> ${url}`);
+      lastUrl = url;
+    }
+    if (isAuthedUrl(url)) {
+      detected = true;
       break;
     }
     await page.waitForTimeout(1000);
   }
 
+  if (detected) {
+    console.log("");
+    console.log("Login detected. Letting cookies settle for 3s.");
+    await page.waitForTimeout(3000);
+  } else {
+    console.log("Login not detected within 5 minutes; closing anyway.");
+  }
   await context.close();
-  console.log(`Profile saved to ${PROFILE_DIR}`);
-  console.log("Run 'pnpm scrape curriculum --course-id <id>' next.");
+  console.log(`Profile: ${PROFILE_DIR}`);
+  if (detected) {
+    console.log("");
+    console.log("Run: pnpm scrape curriculum --course-id 2767887");
+  } else {
+    console.log("");
+    console.log("Login appears incomplete. Run: pnpm scrape login   (try again)");
+    process.exit(1);
+  }
 }
 
 async function cmdCurriculum(args: string[]) {
@@ -129,6 +178,7 @@ async function cmdCurriculum(args: string[]) {
   const curriculumUrl = `${BASE_URL}/admin-app/courses/${courseId}/curriculum`;
   console.log(`Loading ${curriculumUrl}`);
   await page.goto(curriculumUrl, { waitUntil: "domcontentloaded" });
+  await waitForCloudflare(page);
 
   await page.waitForSelector('a[href*="/curriculum/lessons/"]', { timeout: 30000 });
   await page.waitForTimeout(1500);
@@ -141,67 +191,55 @@ async function cmdCurriculum(args: string[]) {
     .then((t) => t?.trim() ?? "");
 
   const sections = await page.evaluate(() => {
-    function closestSectionTitle(el: Element): string {
-      let cur: Element | null = el;
-      while (cur) {
-        const heading = cur.querySelector(":scope > div h1, :scope > div h2, :scope > div h3");
-        if (heading && heading.textContent && heading.textContent.trim().length > 0) {
-          return heading.textContent.trim();
+    const allElements = Array.from(document.querySelectorAll("*"));
+    const headingPositions: { el: Element; text: string; index: number }[] = [];
+    const lessonPositions: { id: string; title: string; index: number }[] = [];
+
+    allElements.forEach((el, index) => {
+      const tag = el.tagName.toUpperCase();
+      if (tag === "H1" || tag === "H2" || tag === "H3") {
+        const text = (el.textContent || "").trim();
+        if (text.length > 0 && text.length < 200) {
+          headingPositions.push({ el, text, index });
         }
-        cur = cur.parentElement;
-      }
-      return "";
-    }
-
-    const lessonAnchors = Array.from(
-      document.querySelectorAll('a[href*="/curriculum/lessons/"]'),
-    ) as HTMLAnchorElement[];
-
-    type RawLesson = { id: string; title: string; sectionTitle: string };
-    const raw: RawLesson[] = [];
-    const seen = new Set<string>();
-
-    for (const a of lessonAnchors) {
-      const m = a.href.match(/\/lessons\/(\d+)/);
-      if (!m) continue;
-      const id = m[1];
-      if (seen.has(id)) continue;
-      seen.add(id);
-      const title = (a.textContent || "").trim();
-      if (!title) continue;
-
-      let cursor: Element | null = a;
-      let sectionTitle = "";
-      while (cursor && !sectionTitle) {
-        const sib: Element | null = cursor.previousElementSibling;
-        if (sib) {
-          const h = sib.querySelector("h1, h2, h3");
-          if (h && h.textContent && h.textContent.trim().length > 0) {
-            sectionTitle = h.textContent.trim();
-            break;
+      } else if (tag === "A") {
+        const a = el as HTMLAnchorElement;
+        const m = a.href.match(/\/curriculum\/lessons\/(\d+)/);
+        if (m) {
+          const title = (a.textContent || "").trim();
+          if (title.length > 0) {
+            lessonPositions.push({ id: m[1], title, index });
           }
-          cursor = sib;
-        } else {
-          cursor = cursor.parentElement;
         }
       }
-      if (!sectionTitle) sectionTitle = closestSectionTitle(a);
+    });
 
-      raw.push({ id, title, sectionTitle: sectionTitle || "Uncategorized" });
-    }
-
+    const seen = new Set<string>();
     const order: string[] = [];
-    const grouped = new Map<string, RawLesson[]>();
-    for (const r of raw) {
-      if (!grouped.has(r.sectionTitle)) {
-        grouped.set(r.sectionTitle, []);
-        order.push(r.sectionTitle);
+    const grouped = new Map<string, { id: string; title: string }[]>();
+
+    for (const lesson of lessonPositions) {
+      if (seen.has(lesson.id)) continue;
+      seen.add(lesson.id);
+
+      let sectionTitle = "Uncategorized";
+      for (let i = headingPositions.length - 1; i >= 0; i--) {
+        if (headingPositions[i].index < lesson.index) {
+          sectionTitle = headingPositions[i].text;
+          break;
+        }
       }
-      grouped.get(r.sectionTitle)!.push(r);
+
+      if (!grouped.has(sectionTitle)) {
+        grouped.set(sectionTitle, []);
+        order.push(sectionTitle);
+      }
+      grouped.get(sectionTitle)!.push({ id: lesson.id, title: lesson.title });
     }
-    return order.map((sectionTitle) => ({
-      title: sectionTitle,
-      lessons: grouped.get(sectionTitle)!.map((l) => ({ id: l.id, title: l.title })),
+
+    return order.map((title) => ({
+      title,
+      lessons: grouped.get(title) || [],
     }));
   });
 
@@ -250,6 +288,7 @@ async function scrapeLessonHtml(
 
   console.log(`  Loading ${lessonUrl}`);
   await page.goto(lessonUrl, { waitUntil: "domcontentloaded" });
+  await waitForCloudflare(page);
   await page
     .waitForSelector(
       'div[class*="_lectureEditorContainer"], [data-testid="attachment-content"]',
@@ -349,7 +388,8 @@ async function cmdAll(args: string[]) {
       "course-id": { type: "string" },
       course: { type: "string" },
       headless: { type: "boolean", default: false },
-      delay: { type: "string", default: "1500" },
+      delay: { type: "string", default: "4000" },
+      jitter: { type: "string", default: "2000" },
     },
   });
   const courseId = values["course-id"];
@@ -360,7 +400,8 @@ async function cmdAll(args: string[]) {
     );
     process.exit(1);
   }
-  const delayMs = parseInt(values.delay ?? "1500", 10);
+  const baseDelayMs = parseInt(values.delay ?? "4000", 10);
+  const jitterMs = parseInt(values.jitter ?? "2000", 10);
 
   const curriculumPath = path.join(CACHE_DIR, courseId, "curriculum.json");
   const curriculumRaw = await fs.readFile(curriculumPath, "utf8").catch(() => null);
@@ -451,7 +492,9 @@ async function cmdAll(args: string[]) {
         for (const w of portResult.warnings) console.log(`     ! ${w}`);
       }
 
-      await page.waitForTimeout(delayMs);
+      const sleep = baseDelayMs + Math.floor(Math.random() * jitterMs);
+      console.log(`  (sleeping ${sleep}ms before next lesson)`);
+      await page.waitForTimeout(sleep);
     }
   }
 
