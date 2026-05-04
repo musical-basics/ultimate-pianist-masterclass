@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, Inter } from "next/font/google";
-import DpAnalyticsBeacon from "@/components/dp-analytics-beacon";
 import "./globals.css";
 
 const inter = Inter({
@@ -17,9 +16,8 @@ const cormorant = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  title: "The Ultimate Pianist — VIP Waitlist",
-  description:
-    "Finally learn the pieces you bought but never played. Join the VIP waitlist for The Ultimate Pianist Masterclass and lock in your spot for just $1.",
+  title: "The Ultimate Pianist",
+  description: "The Ultimate Pianist Masterclass by Lionel Yu.",
 };
 
 export default function RootLayout({
@@ -31,7 +29,6 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.variable} ${cormorant.variable}`}>
         {children}
-        <DpAnalyticsBeacon />
       </body>
     </html>
   );
