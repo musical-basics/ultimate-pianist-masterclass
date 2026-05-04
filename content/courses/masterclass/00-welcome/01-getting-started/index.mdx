@@ -1,0 +1,50 @@
+---
+title: "Getting Started: A Tour of Every Lesson Element"
+public_preview: true
+draft: true
+duration_minutes: 5
+---
+
+This is the seed lesson. It exists to demonstrate every component you can use
+inside a lesson MDX file. Replace the body with real content when porting from
+Teachable.
+
+## Plain prose
+
+You can write paragraphs like this. Markdown formatting works: **bold**,
+*italic*, [links](https://example.com), inline `code`, and so on.
+
+Headings (`##`, `###`) become section breaks within the lesson. Lists work too:
+
+- First idea
+- Second idea
+- Third idea
+
+## Embedding a Mux video
+
+<Video playbackId="REPLACE_WITH_MUX_PLAYBACK_ID" />
+
+## Embedding a PDF (e.g. sheet music)
+
+<Pdf src="/sample-score.pdf" title="Sample Score (replace path)" />
+
+## A quiz
+
+<Quiz
+  question="What's the most important thing about how you sit at the piano?"
+  options={[
+    "Bench height puts your forearms parallel to the floor",
+    "Sit as close to the keys as possible",
+    "It doesn't matter as long as you can reach"
+  ]}
+  answer={0}
+/>
+
+## Inline images
+
+Standard markdown images work. Co-locate image assets inside an `assets/`
+folder next to `index.mdx`, then reference them with a relative path:
+
+```md
+![A diagram of correct piano posture](./assets/posture.png)
+```
