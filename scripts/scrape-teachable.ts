@@ -183,12 +183,21 @@ async function cmdCurriculum(args: string[]) {
   await page.waitForSelector('a[href*="/curriculum/lessons/"]', { timeout: 30000 });
   await page.waitForTimeout(1500);
 
-  const courseTitle = await page
+  let courseTitle = await page
     .locator("h1, h2")
     .filter({ hasText: /.+/ })
     .first()
     .textContent()
     .then((t) => t?.trim() ?? "");
+
+  if (!courseTitle || courseTitle.toLowerCase() === "curriculum") {
+    const pageTitle = await page.title();
+    const parts = pageTitle.split("|").map((s) => s.trim()).filter(Boolean);
+    const candidate = parts.find(
+      (p) => p.toLowerCase() !== "curriculum" && p.toLowerCase() !== "teachable",
+    );
+    if (candidate) courseTitle = candidate;
+  }
 
   const sections = await page.evaluate(() => {
     const allElements = Array.from(document.querySelectorAll("*"));
@@ -388,8 +397,8 @@ async function cmdAll(args: string[]) {
       "course-id": { type: "string" },
       course: { type: "string" },
       headless: { type: "boolean", default: false },
-      delay: { type: "string", default: "4000" },
-      jitter: { type: "string", default: "2000" },
+      delay: { type: "string", default: "6000" },
+      force: { type: "boolean", default: false },
     },
   });
   const courseId = values["course-id"];
@@ -400,8 +409,7 @@ async function cmdAll(args: string[]) {
     );
     process.exit(1);
   }
-  const baseDelayMs = parseInt(values.delay ?? "4000", 10);
-  const jitterMs = parseInt(values.jitter ?? "2000", 10);
+  const baseDelayMs = parseInt(values.delay ?? "6000", 10);
 
   const curriculumPath = path.join(CACHE_DIR, courseId, "curriculum.json");
   const curriculumRaw = await fs.readFile(curriculumPath, "utf8").catch(() => null);
@@ -431,6 +439,7 @@ async function cmdAll(args: string[]) {
 
   let scraped = 0;
   let ported = 0;
+  let skipped = 0;
   for (const section of curriculum.sections) {
     const sectionDir = path.join(courseRoot, section.slug);
     await fs.mkdir(sectionDir, { recursive: true });
@@ -441,13 +450,26 @@ async function cmdAll(args: string[]) {
     );
 
     for (const lesson of section.lessons) {
+      const lessonDir = path.join(sectionDir, lesson.slug);
+      const indexPath = path.join(lessonDir, "index.mdx");
+
+      const existing = await fs
+        .stat(indexPath)
+        .then(() => true)
+        .catch(() => false);
+      if (existing && !values.force) {
+        console.log("");
+        console.log(`Skipping ${section.slug}/${lesson.slug} (already ported; --force to redo)`);
+        skipped += 1;
+        continue;
+      }
+
       console.log("");
       console.log(`Scraping ${section.slug}/${lesson.slug} [${lesson.id}]`);
 
       const scrapeResult = await scrapeLessonHtml(context, courseId, lesson.id);
       scraped += 1;
 
-      const lessonDir = path.join(sectionDir, lesson.slug);
       await fs.mkdir(lessonDir, { recursive: true });
       const lessonAssetsDir = path.join(lessonDir, "assets");
       await fs.mkdir(lessonAssetsDir, { recursive: true });
@@ -492,14 +514,17 @@ async function cmdAll(args: string[]) {
         for (const w of portResult.warnings) console.log(`     ! ${w}`);
       }
 
-      const sleep = baseDelayMs + Math.floor(Math.random() * jitterMs);
+      const offset = Math.floor((Math.random() - 0.5) * 2000);
+      const sleep = Math.max(0, baseDelayMs + offset);
       console.log(`  (sleeping ${sleep}ms before next lesson)`);
       await page.waitForTimeout(sleep);
     }
   }
 
   console.log("");
-  console.log(`Done. Scraped ${scraped} lessons, ported ${ported} to MDX.`);
+  console.log(
+    `Done. Scraped ${scraped} new, ported ${ported} to MDX, skipped ${skipped} already-ported.`,
+  );
   console.log(`Output: ${path.relative(REPO_ROOT, courseRoot)}`);
   console.log("Next: re-upload videos to Mux, upload PDFs, swap TODO_UPLOAD placeholders.");
 
@@ -518,8 +543,12 @@ function printHelp() {
       "  all --course-id <id> --course <slug>        Scrape every lesson and port to content/courses/<slug>/",
       "",
       "Common flags:",
-      "  --headless           Run without a visible browser window (login won't work headless)",
-      "  --delay <ms>         (all) Delay between lesson requests; default 1500ms",
+      "  --headless           Run without a visible browser window (login won't work headless;",
+      "                       Cloudflare also blocks the academy admin paths in headless)",
+      "  --delay <ms>         (all) Base delay between lessons; actual sleep is base ±1000ms.",
+      "                       Default 6000ms (so 5-7s per lesson).",
+      "  --force              (all) Re-scrape lessons even if their index.mdx already exists.",
+      "                       Default: skip already-ported lessons (so the run resumes safely).",
     ].join("\n"),
   );
 }
